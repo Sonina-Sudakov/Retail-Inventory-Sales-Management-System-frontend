@@ -1,220 +1,64 @@
-import { useEffect, useState } from "react"
-import { api } from "./api"
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Navigate
+} from "react-router-dom"
 
-type User = {
-    id: number
-    username: string
-    fullname: string
-    role: string
-}
+import AdminLayout from "./components/layout/AdminLayout"
+
+import UsersPage from "./pages/UsersPage"
+import ProductsPage from "./pages/ProductsPage"
+import ShopsPage from "./pages/ShopsPage"
+import OrdersPage from "./pages/OrdersPage"
+import DeliveriesPage from "./pages/ShipmentsPage"
 
 function App() {
 
-    const [users, setUsers] = useState<User[]>([])
-
-    const [username, setUsername] = useState("")
-    const [fullname, setFullname] = useState("")
-    const [password, setPassword] = useState("")
-    const [role, setRole] = useState("")
-
-    async function loadUsers() {
-
-        const response = await api.get("/users/")
-
-        setUsers(response.data.items)
-    }
-
-    useEffect(() => {
-        loadUsers()
-    }, [])
-
-    async function createUser() {
-
-        await api.post("/users/", {
-            username,
-            fullname,
-            password,
-            role
-        })
-
-        setUsername("")
-        setFullname("")
-        setPassword("")
-
-        await loadUsers()
-    }
-
-
-    async function deleteUser(id: number) {
-
-        await api.delete(`/users/${id}`)
-
-        await loadUsers()
-    }
-
-
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
 
-            <div className="max-w-5xl mx-auto">
+        <BrowserRouter>
 
-                <h1 className="text-4xl font-bold mb-8">
-                    Users
-                </h1>
+            <Routes>
 
-                {/* CREATE USER CARD */}
+                <Route element={<AdminLayout />}>
 
-                <div className="bg-white rounded-2xl shadow p-6 mb-8">
+                    <Route
+                        path="/users"
+                        element={<UsersPage />}
+                    />
 
-                    <h2 className="text-2xl font-semibold mb-4">
-                        Create User
-                    </h2>
+                    <Route
+                        path="/products"
+                        element={<ProductsPage />}
+                    />
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <Route
+                        path="/shops"
+                        element={<ShopsPage />}
+                    />
 
-                        <input
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Username"
-                            className="border rounded-xl p-3"
-                        />
+                    <Route
+                        path="/orders"
+                        element={<OrdersPage />}
+                    />
 
-                        <input
-                            value={fullname}
-                            onChange={(e) => setFullname(e.target.value)}
-                            placeholder="Fullname"
-                            className="border rounded-xl p-3"
-                        />
+                    <Route
+                        path="/shipments"
+                        element={<DeliveriesPage />}
+                    />
 
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            className="border rounded-xl p-3"
-                        />
+                </Route>
 
-                        <select
-                            id="role"
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            className="border rounded-xl p-3"
-                        >
-                            <option value="" disabled hidden>Role</option>
-                            <option value="ADMIN">Admin</option>
-                            <option value="STOREKEEPER" selected>Storekeeper</option>
-                            <option value="SHOPKEEPER">Shopkeeper</option>
-                        </select>
+                <Route
+                    path="*"
+                    element={<Navigate to="/users" />}
+                />
 
-                    </div>
+            </Routes>
 
-                    <button
-                        onClick={createUser}
-                        className="
-                            mt-4
-                            bg-black
-                            text-white
-                            px-6
-                            py-3
-                            rounded-xl
-                            hover:opacity-80
-                        "
-                    >
-                        Create User
-                    </button>
+        </BrowserRouter>
 
-                </div>
-
-                {/* USERS TABLE */}
-
-                <div className="bg-white rounded-2xl shadow overflow-hidden">
-
-                    <table className="w-full">
-
-                        <thead className="bg-gray-50">
-
-                            <tr>
-
-                                <th className="text-left p-4">
-                                    ID
-                                </th>
-
-                                <th className="text-left p-4">
-                                    Username
-                                </th>
-
-                                <th className="text-left p-4">
-                                    Fullname
-                                </th>
-
-                                <th className="text-left p-4">
-                                    Role
-                                </th>
-
-                                <th className="text-left p-4">
-                                    Actions
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            {users.map(user => (
-
-                                <tr
-                                    key={user.id}
-                                    className="border-t"
-                                >
-
-                                    <td className="p-4">
-                                        {user.id}
-                                    </td>
-
-                                    <td className="p-4">
-                                        {user.username}
-                                    </td>
-
-                                    <td className="p-4">
-                                        {user.fullname}
-                                    </td>
-
-                                    <td className="p-4">
-                                        {user.role}
-                                    </td>
-
-                                    <td className="p-4">
-
-                                        <button
-                                            onClick={() => deleteUser(user.id)}
-                                            className="
-                                                bg-red-500
-                                                text-white
-                                                px-4
-                                                py-2
-                                                rounded-xl
-                                                hover:opacity-80
-                                            "
-                                        >
-                                            Delete
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            ))}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
     )
 }
 
