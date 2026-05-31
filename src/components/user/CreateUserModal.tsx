@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react"
 import { Form, Input, Modal, Select } from "antd"
 import { api } from "../../api/api"
+import type { User } from "../../types/user"
 
 type Props = {
     open: boolean
@@ -23,11 +25,8 @@ export default function CreateUserModal({
     }) {
 
         await api.post("/users/", values)
-
         form.resetFields()
-
         await onSuccess()
-
         onClose()
     }
 
