@@ -1,17 +1,30 @@
-import Sidebar from "./Sidebar"
+import { Layout } from "antd"
 import { Outlet } from "react-router-dom"
+
+import Sidebar from "../layout/Sidebar"
+
+const { Content } = Layout
 
 export default function AdminLayout() {
 
     return (
-        <div className="flex">
+        <Layout style={{ minHeight: "100vh" }}>
 
             <Sidebar />
 
-            <main className="flex-1 p-8 bg-gray-100 min-h-screen">
-                <Outlet />
-            </main>
+            <Layout>
 
-        </div>
+                <Content
+                    style={{
+                        padding: 24,
+                        background: "#f5f5f5"
+                    }}
+                >
+                    <Outlet />
+                </Content>
+
+            </Layout>
+
+        </Layout>
     )
 }

@@ -1,38 +1,84 @@
-import { Link } from "react-router-dom"
+import { Layout, Menu, Typography } from "antd"
+import {
+    UserOutlined,
+    ShoppingOutlined,
+    ShopOutlined,
+    FileTextOutlined,
+    TruckOutlined
+} from "@ant-design/icons"
+
+import { useNavigate, useLocation } from "react-router-dom"
+import { useState } from "react"
+
+const { Sider } = Layout
 
 export default function Sidebar() {
 
+    const navigate = useNavigate()
+    const location = useLocation()
+    const [collapsed, setCollapsed] = useState(false)
+
     return (
-        <aside className="w-64 bg-gray-900 text-white min-h-screen p-4">
+        <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={setCollapsed}
+            width={200}
+            theme="dark"
+        >
+            <div
+                style={{
+                    padding: 16
+                }}
+            >
+                <Typography.Title
+                    level={4}
+                    style={{
+                        color: "white",
+                        margin: 0,
+                        whiteSpace: "nowrap"
+                    }}
+                >
+                    {collapsed ? "ERP" : "Admin Panel"}
+                </Typography.Title>
+            </div>          
 
-            <h1 className="text-2xl font-bold mb-8">
-                Admin Panel
-            </h1>
-
-            <nav className="flex flex-col gap-2">
-
-                <Link to="/users">
-                    Users
-                </Link>
-
-                <Link to="/products">
-                    Products
-                </Link>
-
-                <Link to="/shops">
-                    Shops
-                </Link>
-
-                <Link to="/orders">
-                    Orders
-                </Link>
-
-                <Link to="/shipments">
-                    Shipments
-                </Link>
-
-            </nav>
-
-        </aside>
+            <Menu
+                theme="dark"
+                mode="inline"
+                style={{
+                   textAlign: "left" 
+                }}
+                selectedKeys={[location.pathname]}
+                onClick={({ key }) => navigate(key)}
+                items={[
+                    {
+                        key: "/users",
+                        icon: <UserOutlined />,
+                        label: "Users"
+                    },
+                    {
+                        key: "/products",
+                        icon: <ShoppingOutlined />,
+                        label: "Products"
+                    },
+                    {
+                        key: "/shops",
+                        icon: <ShopOutlined />,
+                        label: "Shops"
+                    },
+                    {
+                        key: "/orders",
+                        icon: <FileTextOutlined />,
+                        label: "Orders"
+                    },
+                    {
+                        key: "/shipments",
+                        icon: <TruckOutlined />,
+                        label: "Shipments"
+                    }
+                ]}
+            />
+        </Sider>
     )
 }

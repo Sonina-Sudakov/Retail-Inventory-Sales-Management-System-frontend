@@ -1,0 +1,105 @@
+import { Form, Input, Modal, Select } from "antd"
+import { api } from "../../api/api"
+
+type Props = {
+    open: boolean
+    onClose: () => void
+    onSuccess: () => Promise<void>
+}
+
+export default function CreateUserModal({
+    open,
+    onClose,
+    onSuccess
+}: Props) {
+
+    const [form] = Form.useForm()
+
+    async function handleSubmit(values: {
+        username: string
+        fullname: string
+        password: string
+        role: string
+    }) {
+
+        await api.post("/users/", values)
+
+        form.resetFields()
+
+        await onSuccess()
+
+        onClose()
+    }
+
+    return (
+        <Modal
+            open={open}
+            title="Create User"
+            okText="Create"
+            cancelText="Cancel"
+            onCancel={onClose}
+            onOk={() => form.submit()}
+        >
+            <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleSubmit}
+            >
+                <Form.Item
+                    label="Username"
+                    name="username"
+                    rules={[
+                        { required: true }
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Fullname"
+                    name="fullname"
+                    rules={[
+                        { required: true }
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                        { required: true }
+                    ]}
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                    label="Role"
+                    name="role"
+                    rules={[
+                        { required: true }
+                    ]}
+                >
+                    <Select
+                        options={[
+                            {
+                                value: "ADMIN",
+                                label: "Admin"
+                            },
+                            {
+                                value: "STOREKEEPER",
+                                label: "Storekeeper"
+                            },
+                            {
+                                value: "SHOPKEEPER",
+                                label: "Shopkeeper"
+                            }
+                        ]}
+                    />
+                </Form.Item>
+            </Form>
+        </Modal>
+    )
+}
