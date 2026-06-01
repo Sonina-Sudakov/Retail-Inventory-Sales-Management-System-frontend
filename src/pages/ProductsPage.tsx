@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react"
 
 import SaveProductModal from "../components/product/SaveProductModal"
@@ -8,10 +7,8 @@ import type { Product } from "../types/product"
 import {
     Table,
     Input,
-    Select,
     Button,
     Card,
-    Space,
     Typography,
     Popconfirm
 } from "antd"
@@ -85,7 +82,6 @@ export default function ProductPage() {
                <>
                 <Button
                     onClick={() => {
-                        console.log("CREATE CLICK")
                         setSelectedProduct(product)
                         setSaveOpen(true)
                     }}
