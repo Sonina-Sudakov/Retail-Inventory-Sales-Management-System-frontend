@@ -11,7 +11,11 @@ import UsersPage from "./pages/UsersPage"
 import ProductsPage from "./pages/ProductsPage"
 import ShopsPage from "./pages/ShopsPage"
 import OrdersPage from "./pages/OrdersPage"
-import DeliveriesPage from "./pages/ShipmentsPage"
+import OrderDetailsPage from "./pages/OrderDetailsPage"
+import ShipmentsPage from "./pages/ShipmentsPage"
+import CreateOrderPage from "./pages/CreateOrderPage"
+import CreateShipmentPage from "./pages/CreateShipmentPage"
+
 
 function App() {
 
@@ -43,10 +47,26 @@ function App() {
                         element={<OrdersPage />}
                     />
 
+                    <Route 
+                        path="/orders/:id" 
+                        element={<OrderDetailsPage />} 
+                    />
+
+                    <Route
+                        path="/orders/create"
+                        element={<CreateOrderPage />}
+                    />
+
                     <Route
                         path="/shipments"
-                        element={<DeliveriesPage />}
+                        element={<ShipmentsPage />}
                     />
+
+                    <Route
+                        path="/shipments/create/:orderId"
+                        element={<CreateShipmentPage />}
+                    />
+
 
                 </Route>
 
