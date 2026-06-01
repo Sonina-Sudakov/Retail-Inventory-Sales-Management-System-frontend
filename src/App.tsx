@@ -12,6 +12,7 @@ import ProductsPage from "./pages/ProductsPage"
 import ShopsPage from "./pages/ShopsPage"
 import OrdersPage from "./pages/OrdersPage"
 import DeliveriesPage from "./pages/ShipmentsPage"
+import LoginPage from "./pages/LoginPage"
 
 function App() {
 
@@ -54,6 +55,10 @@ function App() {
                     path="*"
                     element={<Navigate to="/users" />}
                 />
+
+
+                <Route path="/login" element={<LoginPage />} />
+
 
             </Routes>
 
