@@ -32,7 +32,12 @@ export default function ChangePasswordModal({
         form.resetFields()
 
         await onSuccess()
+         
+        onClose()
+    }
 
+    function handleClose() {
+        form.resetFields()
         onClose()
     }
 
@@ -40,7 +45,7 @@ export default function ChangePasswordModal({
         <Modal
             open={open}
             title={`Change password (${user?.username})`}
-            onCancel={onClose}
+            onCancel={handleClose}
             onOk={() => form.submit()}
         >
             <Form

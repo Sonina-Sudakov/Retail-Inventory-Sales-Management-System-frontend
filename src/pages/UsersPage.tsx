@@ -43,7 +43,7 @@ export default function UsersPage() {
 
     async function deleteUser(id: number) {
 
-        await api.delete(`/users/${id}`)
+        await api.delete(`/users?id=${id}`)
 
         await loadUsers()
     }

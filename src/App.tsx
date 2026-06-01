@@ -13,6 +13,10 @@ import ShopsPage from "./pages/ShopsPage"
 import OrdersPage from "./pages/OrdersPage"
 import DeliveriesPage from "./pages/ShipmentsPage"
 import LoginPage from "./pages/LoginPage"
+import OrderDetailsPage from "./pages/OrderDetailsPage"
+import ShipmentsPage from "./pages/ShipmentsPage"
+import CreateOrderPage from "./pages/CreateOrderPage"
+import CreateShipmentPage from "./pages/CreateShipmentPage"
 
 function App() {
 
@@ -45,9 +49,25 @@ function App() {
                     />
 
                     <Route
-                        path="/shipments"
-                        element={<DeliveriesPage />}
+                        path="/orders/:id"
+                        element={<OrderDetailsPage />}
                     />
+
+                    <Route
+                        path="/orders/create"
+                        element={<CreateOrderPage />}
+                    />
+
+                    <Route
+                        path="/shipments"
+                        element={<ShipmentsPage />}
+                    />
+
+                    <Route
+                        path="/shipments/create/:orderId"
+                        element={<CreateShipmentPage />}
+                    />
+
 
                 </Route>
 

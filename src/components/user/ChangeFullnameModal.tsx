@@ -1,4 +1,6 @@
 import { Form, Input, Modal } from "antd"
+import { useEffect, useState } from "react"
+
 import { api } from "../../api/api"
 import type { User } from "../../types/user"
 
@@ -18,6 +20,14 @@ export default function ChangeFullnameModal({
 
     const [form] = Form.useForm()
 
+    useEffect(() => {
+        if (user) {
+            form.setFieldsValue({
+                new_fullname: user.fullname
+            })
+        }
+    }, [user, form])
+
     async function handleSubmit(values: {
         new_fullname: string
     }) {
@@ -36,11 +46,17 @@ export default function ChangeFullnameModal({
         onClose()
     }
 
+    function handleClose() {
+        form.resetFields()
+        onClose()
+    }
+
+
     return (
         <Modal
             open={open}
             title={`Change fullname (${user?.username})`}
-            onCancel={onClose}
+            onCancel={handleClose}
             onOk={() => form.submit()}
         >
             <Form
