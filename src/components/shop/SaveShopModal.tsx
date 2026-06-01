@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Form, Input, Modal } from "antd"
+import { Form, Input, Modal, message } from "antd"
 import InputMask from "react-input-mask"
 import { api } from "../../api/api"
 import type { Shop } from "../../types/shop"
@@ -40,18 +40,26 @@ export default function SaveShopModal({
             phone_number: values.phoneNumber,
             email: values.email
         }
-
-        if (isEdit && shop) {
-            await api.put(`/shops/`, {
-                id: shop.id,
-                ...request
-            })
-        } else {
-            await api.post("/shops/", request)
+        try {
+            if (isEdit && shop) {
+                await api.put(`/shops/`, {
+                    id: shop.id,
+                    ...request
+                })
+            } else {
+                await api.post("/shops/", request)
+            }
+            form.resetFields()
+            await onSuccess()
+            onClose()
         }
-        form.resetFields()
-        await onSuccess()
-        onClose()
+        catch (error: any) { 
+            message.error(
+                error.response?.data?.message ??
+                "Unknown error"
+            )        
+        }
+
     }
 
    return (

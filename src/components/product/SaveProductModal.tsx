@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Form, Input, Modal } from "antd"
+import { Form, Input, Modal, InputNumber, message } from "antd"
 import InputMask from "react-input-mask"
 import { api } from "../../api/api"
 import type { Product } from "../../types/product"
@@ -34,17 +34,26 @@ export default function SaveProductModal({
 
     async function handleSubmit(values: any) {
 
-        if (isEdit && product) {
-            await api.put(`/products/`, {
-                id: product.id,
-                ...values
-            })
-        } else {
-            await api.post("/products/", values)
+        try {
+            if (isEdit && product) {
+                await api.put(`/products/`, {
+                    id: product.id,
+                    ...values
+                })
+            } else {
+                await api.post("/products/", values)
+            }
+            form.resetFields()
+            await onSuccess()
+            onClose()
+
         }
-        form.resetFields()
-        await onSuccess()
-        onClose()
+        catch (error: any) {
+            message.error(
+                error.response?.data?.message ??
+                "Unknown error"
+            )        
+        }
     }
 
    return (
@@ -91,8 +100,13 @@ export default function SaveProductModal({
               { required: true, message: "Price is required" }
             ]}
           >
-            <Input />
-          </Form.Item>
+
+          <InputNumber
+            min={0}
+            step={0.01}
+            style={{ width: "100%" }}
+          /> 
+              </Form.Item>
 
 
           <Form.Item
