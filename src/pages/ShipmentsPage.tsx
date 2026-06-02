@@ -9,9 +9,10 @@ import {
     Input,
     Button,
     Card,
-    Typography
+    Typography,
+    message
 } from "antd"
-import { getRole } from "../utils/jwt"
+import { getRole, getUserId } from "../utils/jwt"
 
 
 export default function ShipmentPage() {
@@ -23,6 +24,7 @@ export default function ShipmentPage() {
     const navigate = useNavigate()
 
     const role = getRole()?.toLowerCase()
+    const userId = getUserId()
 
     async function loadShipments() {
 
@@ -45,6 +47,25 @@ export default function ShipmentPage() {
     useEffect(() => {
         loadShipments()
     }, [])
+
+
+    async function handleAccept(shipmentId: number) {
+        try {
+            await api.put(
+                `/shipments/accept?shipment_id=${shipmentId}&user_id=${userId}`
+            )
+
+            message.success("Shipment accepted")
+
+            await loadShipments()
+        }
+        catch (error: any) {
+            message.error(
+                error.response?.data?.message ??
+                "Unknown error"
+            )
+        }
+    }
 
 
     const columns = [
@@ -104,13 +125,21 @@ export default function ShipmentPage() {
             render: (_: unknown, shipment: ShipmentShort) => (
                 <>
                     <Button
-                        onClick={() => {
-                            navigate(`${shipment.id}`)
-                        }}
+                        onClick={() => navigate(`${shipment.id}`)}
                         style={{ marginRight: 8 }}
                     >
                         Details
                     </Button>
+
+                    {role === "shopkeeper" && 
+                        shipment.status === "CREATED" && (
+                        <Button
+                            type="primary"
+                            onClick={() => handleAccept(shipment.id)}
+                        >
+                            Accept
+                        </Button>
+                    )}
                 </>
             )
         }
