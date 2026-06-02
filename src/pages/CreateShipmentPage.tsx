@@ -59,7 +59,7 @@ export default function CreateShipmentPage() {
                     onChange={(value) => {
                         setShipmentItems(items =>
                             items.map(item =>
-                                item.product.id === record.productId
+                                item.product.id === record.product.id
                                     ? {
                                         ...item,
                                         shipmentQuantity: value ?? 0
@@ -81,7 +81,7 @@ export default function CreateShipmentPage() {
                         setShipmentItems(items =>
                             items.filter(
                                 item =>
-                                    item.product.id !== record.productId
+                                    item.product.id !== record.product.id
                             )
                         )
                     }
@@ -104,24 +104,19 @@ export default function CreateShipmentPage() {
 
     async function loadOrder() {
 
-        if (!order) {
-            return
-        }
-
-
         const response = await api.get(`/orders?id=${id}`)
 
         const data = response.data
 
-        setOrder({
-            id: data.id,
-            shop: data.to_shop,
-            createdBy: data.created_by,
-            status: data.status,
-            createdAt: data.created_at,
-            acceptedAt: data.accepted_at,
-            items: data.items
-        })
+       setOrder({
+           id: data.id,
+           shop: data.to_shop,
+           createdBy: data.created_by,
+           status: data.status,
+           createdAt: data.created_at,
+           acceptedAt: data.accepted_at,
+           items: data.items
+       }) 
     }
 
 
@@ -140,7 +135,9 @@ export default function CreateShipmentPage() {
 
                 return {
                     product: item.product,
-                    orderedQuantity: item.quantity,
+                    productName: item.product.name,
+                    unit: item.product.unit,
+                    requestedQuantity: item.quantity,
                     availableQuantity: response.data.total_quantity,
                     shipmentQuantity: Math.min(
                         item.quantity,
@@ -171,7 +168,7 @@ export default function CreateShipmentPage() {
         }
 
         try {
-
+            console.log(request)
             const response = await api.post(
                 "/shipments/",
                 request
@@ -188,6 +185,10 @@ export default function CreateShipmentPage() {
                 "Unknown error"
             )
         }
+    }
+
+    if (!order) {
+        return <div>Loading...</div>
     }
 
     return (
@@ -265,7 +266,7 @@ export default function CreateShipmentPage() {
                 style={{ marginBottom: 20 }}
             >
                 <Table
-                    rowKey="productId"
+                    rowKey={(record) => record.product.id} 
                     columns={columns}
                     dataSource={shipmentItems}
                     pagination={false}
@@ -281,6 +282,7 @@ export default function CreateShipmentPage() {
                 <Button
                     type="primary"
                     onClick={handleCreateShipment}
+                    disabled={shipmentItems.length === 0}
                 >
                     Create Shipment
                 </Button>
