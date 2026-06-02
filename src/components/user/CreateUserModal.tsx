@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { Form, Input, Modal, Select, message } from "antd"
 import { api } from "../../api/api"
-import type { User } from "../../types/user"
+import type { Shop } from "../../types/shop"
+
 
 type Props = {
     open: boolean
@@ -16,11 +17,30 @@ export default function CreateUserModal({
 }: Props) {
 
     const [form] = Form.useForm()
+    const [shops, setShops] = useState<Shop[]>([])
+    const role = Form.useWatch("role", form)
+
+    useEffect(() => {
+        async function loadShops() {
+            const response = await api.get("/shops/all")
+
+            const shops = response.data.items.map((shop: any) => ({
+                id: shop.id,
+                name: shop.name
+            }))
+
+            setShops(shops)
+        }
+
+        loadShops()
+    }, [])
+
 
     async function handleSubmit(values: {
         username: string
         fullname: string
         password: string
+        works_in_shop_id: number
         role: string
     }) {
 
@@ -106,7 +126,25 @@ export default function CreateUserModal({
                         ]}
                     />
                 </Form.Item>
-            </Form>
+
+               {role === "SHOPKEEPER" && (
+                    <Form.Item
+                        label="Workplace"
+                        name="works_in_shop_id"
+                        rules={[
+                            { required: true, message: "Select workplace" }
+                        ]}
+                    >
+                        <Select
+                            placeholder="Select shop"
+                            options={shops.map(shop => ({
+                                value: shop.id,
+                                label: `${shop.name} (ID: ${shop.id})`
+                            }))}
+                        />
+                    </Form.Item>
+               )}
+                </Form>
         </Modal>
     )
 }

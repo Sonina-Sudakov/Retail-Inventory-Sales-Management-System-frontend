@@ -9,10 +9,8 @@ import type { User } from "../types/user"
 import {
     Table,
     Input,
-    Select,
     Button,
     Card,
-    Space,
     Typography,
     Popconfirm
 } from "antd"
@@ -33,7 +31,15 @@ export default function UsersPage() {
 
         const response = await api.get("/users/all")
 
-        setUsers(response.data.items)
+        const users: User[] = response.data.items.map((user: any) => ({
+            id: user.id,
+            username: user.username,
+            fullname: user.fullname,
+            worksInShop: user.works_in_shop?.name ?? "-",
+            role: user.role
+        }))
+
+        setUsers(users)
     }
 
     useEffect(() => {
@@ -88,6 +94,12 @@ export default function UsersPage() {
             onFilter: (value, user) =>
                 user.role === value
         },
+        {
+            title: "Workplace",
+            dataIndex: "worksInShop",
+            key: "worksInShop"
+        },
+
         {
             title: "Actions",
             key: "actions",
