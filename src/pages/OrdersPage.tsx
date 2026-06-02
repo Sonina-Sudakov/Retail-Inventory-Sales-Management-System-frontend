@@ -11,6 +11,7 @@ import {
     Card,
     Typography
 } from "antd"
+import { getRole } from "../utils/jwt"
 
 
 export default function OrderPage() {
@@ -20,7 +21,9 @@ export default function OrderPage() {
     const [search, setSearch] = useState("")
 
     const navigate = useNavigate()
-    
+
+    const role = getRole()?.toLowerCase()
+
     async function loadOrders() {
 
         const response = await api.get("/orders/all")
@@ -31,8 +34,8 @@ export default function OrderPage() {
             createdBy: order.created_by.fullname,
             status: order.status,
             createdAt: new Date(order.created_at).toLocaleString(),
-            acceptedAt: order.accepted_at 
-                ? new Date(order.accepted_at).toLocaleString() : "-" 
+            acceptedAt: order.accepted_at
+                ? new Date(order.accepted_at).toLocaleString() : "-"
         }))
 
         setOrders(orders)
@@ -79,27 +82,27 @@ export default function OrderPage() {
             title: "Actions",
             key: "actions",
             render: (_: unknown, order: OrderShort) => (
-               <>
-                <Button
-                    onClick={() => {
-                        navigate(`/orders/${order.id}`)
-                    }}
-                    style={{ marginRight: 8 }}
-                >
-                    Details
-                </Button>
-              </>            
+                <>
+                    <Button
+                        onClick={() => {
+                            navigate(`${role}/orders/${order.id}`)
+                        }}
+                        style={{ marginRight: 8 }}
+                    >
+                        Details
+                    </Button>
+                </>
             )
         }
     ]
 
-   const filteredOrders = orders.filter(order =>
+    const filteredOrders = orders.filter(order =>
         Object.values(order).some(value =>
             String(value).toLowerCase().includes(search.toLowerCase())
         )
-    ) 
+    )
 
-   return (
+    return (
         <div className="p-8">
 
             <Typography.Title
@@ -114,7 +117,7 @@ export default function OrderPage() {
 
             <Card>
 
-               <div
+                <div
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -131,14 +134,14 @@ export default function OrderPage() {
                     <Button
                         type="primary"
                         onClick={() => {
-                           navigate(`/orders/create`) 
+                            navigate(`/orders/create`)
                         }}
                     >
                         Create Order
                     </Button>
 
-                </div> 
-                
+                </div>
+
                 <Table
                     rowKey="id"
                     dataSource={filteredOrders}
@@ -152,7 +155,7 @@ export default function OrderPage() {
 
         </div>
 
-    ) 
+    )
 
 }
 
