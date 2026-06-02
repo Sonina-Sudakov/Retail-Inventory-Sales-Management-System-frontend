@@ -23,12 +23,15 @@ import WarehouseStocksPage from "./pages/WarehouseStocksPage"
 import ShopStocksPage from "./pages/ShopStocksPage"
 import SalesPage from "./pages/SalesPage"
 import ShipmentDetailsPage from "./pages/ShipmentDetailsPage"
+import ThemeSwitcher from "./components/layout/ThemeSwitcher"
 
 function App() {
 
     return (
 
         <BrowserRouter>
+
+            <ThemeSwitcher />
 
             <Routes>
 

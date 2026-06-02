@@ -5,11 +5,15 @@ import Sidebar from "../layout/Sidebar"
 import { menuItems } from "../../config/menu";
 import { getRole } from "../../utils/jwt";
 
+import { theme } from "antd";
+
 const { Content } = Layout
 
 export default function ShopkeeperLayout() {
 
     const role = getRole();
+
+    const { token } = theme.useToken();
 
     const items =
         role && role in menuItems
@@ -26,7 +30,7 @@ export default function ShopkeeperLayout() {
                 <Content
                     style={{
                         padding: 24,
-                        background: "#f5f5f5"
+                        background: token.colorBgContainer
                     }}
                 >
                     <Outlet />
