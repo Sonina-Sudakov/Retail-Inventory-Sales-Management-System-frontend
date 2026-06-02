@@ -30,7 +30,8 @@ export default function ShipmentPage() {
 
         const shipments: ShipmentShort[] = response.data.items.map(shipment => ({
             id: shipment.id,
-            fromLocation: shipment.to_shop.name,
+            fromLocation: shipment.from_location,
+            toLocation: shipment.to_shop ? shipment.to_shop.name : "Warehouse",
             createdBy: shipment.created_by.fullname,
             status: shipment.status,
             createdAt: new Date(shipment.created_at).toLocaleString(),
@@ -58,6 +59,11 @@ export default function ShipmentPage() {
             key: "fromLocation"
         },
         {
+            title: "To Location",
+            dataIndex: "toLocation",
+            key: "toLocation"
+        },
+        {
             title: "Created By User",
             dataIndex: "createdBy",
             key: "createdBy"
@@ -68,23 +74,18 @@ export default function ShipmentPage() {
             key: "status",
             filters: [
                 {
+                    text: "Created",
+                    value: "CREATED"
+                },
+                {
+                    text: "Accepted",
+                    value: "ACCEPTED"
+                },
+                {
                     text: "Canceled",
                     value: "CANCELED"
-                },
-                {
-                    text: "Updated",
-                    value: "UPDATED"
-                },
-                {
-                    text: "Pending",
-                    value: "PENDING"
                 }
-            ],
-            defaultFilteredValue: ["PENDING"],
-
-            onFilter: (value, record) =>
-
-                record.status === value
+            ]
         },
         {
             title: "Created At",
@@ -120,6 +121,8 @@ export default function ShipmentPage() {
             String(value).toLowerCase().includes(search.toLowerCase())
         )
     )
+    
+    console.log(filteredShipments)
 
     return (
         <div className="p-8">
@@ -150,7 +153,7 @@ export default function ShipmentPage() {
                         style={{ width: 500 }}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    {role === "shopkeeper" && (
+                    {role === "storekeeper" && (
                         <Button
                             type="primary"
                             onClick={() => {

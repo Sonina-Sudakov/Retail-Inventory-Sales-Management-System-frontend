@@ -24,6 +24,7 @@ import ShopStocksPage from "./pages/ShopStocksPage"
 import SalesPage from "./pages/SalesPage"
 import ShipmentDetailsPage from "./pages/ShipmentDetailsPage"
 import ThemeSwitcher from "./components/layout/ThemeSwitcher"
+import CreateShipmentForStorePage from "./pages/CreateShipmentForStorePage"
 
 function App() {
 
@@ -196,6 +197,16 @@ function App() {
                     <Route
                         path="shipments/create/:id"
                         element={<CreateShipmentPage />}
+                    />
+
+                    <Route
+                        path="shipments/create"
+                        element={<CreateShipmentForStorePage />}
+                    />
+
+                    <Route
+                        path="shipments/:id"
+                        element={<ShipmentDetailsPage />}
                     />
 
                 </Route>
