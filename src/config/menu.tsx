@@ -5,7 +5,6 @@ import {
     FileTextOutlined,
     TruckOutlined,
     WalletOutlined,
-    StockOutlined,
     InboxOutlined
 
 } from "@ant-design/icons";
@@ -46,13 +45,8 @@ export const menuItems = {
 
     SHOPKEEPER: [
         {
-            key: "/shopkeeper/shop",
-            icon: <ShopOutlined />,
-            label: "Shop"
-        },
-        {
             key: "/shopkeeper/stocks",
-            icon: <StockOutlined />,
+            icon: <InboxOutlined />,
             label: "Stocks"
         },
         {
