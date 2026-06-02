@@ -83,11 +83,28 @@ export default function OrderDetailsPage() {
     return (
         <div className="p-8">
 
-            <Typography.Title level={2}>
-                Order #{order.id}
-            </Typography.Title>
+            <Button 
+                type="link"
+                onClick={() => navigate("/orders")}
+                style={{ 
+                    padding: 0, 
+                    marginBottom: 16, 
+                    display: 'flex', 
+                    justifyContent: 'flex-start' 
+                }}
+           >
+                ← Back to Orders
+           </Button>
 
-            <Card style={{ marginBottom: 20 }}>
+           <Card 
+              title={`Order №${order.id}`}
+              style={{ marginBottom: 20 }}  
+              styles={{
+                  header: {
+                      textAlign: "left" as const
+                  }
+              }}
+           >
 
                 <Descriptions column={1}>
 
@@ -156,25 +173,29 @@ export default function OrderDetailsPage() {
 
             {
                 order.status === "PENDING" && (
-                    <Space
+                    <div
                         style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
                             marginTop: 20
                         }}
                     >
-                        <Button
-                            type="primary"
-                            onClick={handleAccept}
-                        >
-                            Accept
-                        </Button>
+                        <Space>
+                            <Button
+                                type="primary"
+                                onClick={handleAccept}
+                            >
+                                Accept
+                            </Button>
 
-                        <Button
-                            danger
-                            onClick={handleCancel}
-                        >
-                            Cancel
-                        </Button>
-                    </Space>
+                            <Button
+                                danger
+                                onClick={handleCancel}
+                            >
+                                Cancel
+                            </Button>
+                        </Space>
+                    </div>                
                 )
             }
 
