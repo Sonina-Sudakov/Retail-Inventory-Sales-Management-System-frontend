@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import * as XLSX from "xlsx"
+import { saveAs } from "file-saver"
 
 import CreateCellModal from "../components/warehouse/CreateCellModal"
 import ChangeCellCodeModal from "../components/warehouse/ChangeCellCodeModal"
@@ -17,6 +19,7 @@ import {
 
 import type { WarehouseStock } from "../types/warehouseStock"
 import { getStocks, deleteStock, clearStock } from "../api/warehouse"
+import { api } from "../api/api"
 
 
 export default function WarehouseStocksPage() {
@@ -36,12 +39,82 @@ export default function WarehouseStocksPage() {
         const stocks: WarehouseStock[] = response.data.items.map((stock: any) => ({
             id: stock.id,
             cell_code: stock.cell_code,
+            product_id: stock.product?.id,
             product: stock.product?.name ?? "-",
             quantity: stock.quantity
         }))
 
         setStocks(stocks)
     }
+
+
+    async function createCertificate(stock: WarehouseStock) {
+
+        if (!stock.product_id) {
+            return
+        }
+
+        const response = await api.get(
+            `/warehouse/product?id=${stock.product_id}`
+        )
+
+        const data = response.data
+
+        const summary = [
+            {
+                Product: data.product.name,
+                Unit: data.product.unit,
+                Type: data.product.type,
+                TotalQuantity: data.total_quantity,
+                GeneratedAt: new Date().toLocaleString()
+            }
+        ]
+
+        const locations = data.items.map((item: any) => ({
+            CellCode: item.cell_code,
+            Quantity: item.quantity
+        }))
+
+        const workbook = XLSX.utils.book_new()
+
+        const summarySheet =
+            XLSX.utils.json_to_sheet(summary)
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            summarySheet,
+            "Summary"
+        )
+
+        const locationsSheet =
+            XLSX.utils.json_to_sheet(locations)
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            locationsSheet,
+            "Locations"
+        )
+
+        const excelBuffer =
+            XLSX.write(workbook, {
+                bookType: "xlsx",
+                type: "array"
+            })
+
+        const blob = new Blob(
+            [excelBuffer],
+            {
+                type:
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+        )
+
+        saveAs(
+            blob,
+            `warehouse_certificate_${data.product.name}.xlsx`
+        )
+    }
+
 
     useEffect(() => {
         loadStocks()
@@ -118,6 +191,13 @@ export default function WarehouseStocksPage() {
                             Delete
                         </Button>
                     </Popconfirm>
+
+                    <Button
+                        onClick={() => createCertificate(stock)}
+                    >
+                        Certificate
+                    </Button>
+
                 </Space>
             )
         }
