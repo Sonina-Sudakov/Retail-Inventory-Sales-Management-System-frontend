@@ -13,6 +13,7 @@ import {
     message,
     Popover
 } from "antd"
+import { getRole } from "../utils/jwt"
 
 export default function OrderDetailsPage() {
 
@@ -20,6 +21,8 @@ export default function OrderDetailsPage() {
     const navigate = useNavigate()
 
     const [order, setOrder] = useState<OrderDetailed | null>(null)
+
+    const role = getRole()?.toLowerCase()
 
     async function loadOrder() {
 
@@ -54,7 +57,7 @@ export default function OrderDetailsPage() {
     }
 
     async function handleAccept() {
-        navigate(`/shipments/create/${id}`)
+        navigate(`/warehouse/shipments/create/${id}`)
     }
 
     if (!order) {
@@ -82,28 +85,28 @@ export default function OrderDetailsPage() {
     return (
         <div className="p-8">
 
-            <Button 
+            <Button
                 type="link"
-                onClick={() => navigate("/orders")}
-                style={{ 
-                    padding: 0, 
-                    marginBottom: 16, 
-                    display: 'flex', 
-                    justifyContent: 'flex-start' 
+                onClick={() => navigate(`/${role}/orders`)}
+                style={{
+                    padding: 0,
+                    marginBottom: 16,
+                    display: 'flex',
+                    justifyContent: 'flex-start'
                 }}
-           >
+            >
                 ← Back to Orders
-           </Button>
+            </Button>
 
-           <Card 
-              title={`Order №${order.id}`}
-              style={{ marginBottom: 20 }}  
-              styles={{
-                  header: {
-                      textAlign: "left" as const
-                  }
-              }}
-           >
+            <Card
+                title={`Order №${order.id}`}
+                style={{ marginBottom: 20 }}
+                styles={{
+                    header: {
+                        textAlign: "left" as const
+                    }
+                }}
+            >
 
                 <Descriptions column={1}>
 
@@ -119,7 +122,7 @@ export default function OrderDetailsPage() {
                                 </div>
                             }
                         >
-                           <a>{order.shop.name}</a> 
+                            <a>{order.shop.name}</a>
                         </Popover>
                     </Descriptions.Item>
 
@@ -171,7 +174,7 @@ export default function OrderDetailsPage() {
             </Card>
 
             {
-                order.status === "PENDING" && (
+                order.status === "PENDING" && role === "storekeeper" && (
                     <div
                         style={{
                             display: "flex",
@@ -194,7 +197,7 @@ export default function OrderDetailsPage() {
                                 Cancel
                             </Button>
                         </Space>
-                    </div>                
+                    </div>
                 )
             }
 

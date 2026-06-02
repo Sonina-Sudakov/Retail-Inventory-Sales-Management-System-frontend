@@ -13,6 +13,7 @@ import {
 
 import { api } from "../api/api"
 import type { Product } from "../types/product"
+import { getRole } from "../utils/jwt"
 
 export default function CreateOrderPage() {
 
@@ -27,6 +28,8 @@ export default function CreateOrderPage() {
     const selectedProductIds = items
         .map((item: any) => item?.productId)
         .filter(Boolean)
+
+    const role = getRole()?.toLowerCase()
 
     useEffect(() => {
         loadProducts()
@@ -60,7 +63,7 @@ export default function CreateOrderPage() {
 
         const request = {
             to_shop_id: 1,
-            created_by_id: 7,  
+            created_by_id: 7,
             count: values.items.length,
             items: values.items.map((item: any) => ({
                 product_id: item.productId,
@@ -73,7 +76,7 @@ export default function CreateOrderPage() {
 
             message.success("Order created")
 
-            navigate(`/orders/${response.data.id}`)
+            navigate(`${role}/orders/${response.data.id}`)
         }
         catch (error: any) {
             message.error(
@@ -86,27 +89,27 @@ export default function CreateOrderPage() {
     return (
 
         <div>
-           <Button 
+            <Button
                 type="link"
                 onClick={() => navigate("/orders")}
-                style={{ 
-                    padding: 0, 
-                    marginBottom: 16, 
-                    display: 'flex', 
-                    justifyContent: 'flex-start' 
+                style={{
+                    padding: 0,
+                    marginBottom: 16,
+                    display: 'flex',
+                    justifyContent: 'flex-start'
                 }}
-           >
+            >
                 ← Back to Orders
-           </Button>
+            </Button>
 
-           <Card
+            <Card
                 title="Create Order"
                 styles={{
                     header: {
                         textAlign: "left"
                     }
                 }}
-            > 
+            >
                 <div
                     style={{
                         padding: 24,
@@ -198,7 +201,7 @@ export default function CreateOrderPage() {
                                             Delete
                                         </Button>
 
-                                </Space>
+                                    </Space>
                                 ))}
 
                                 <Form.Item>

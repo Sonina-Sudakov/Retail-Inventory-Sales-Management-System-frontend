@@ -6,7 +6,6 @@ import {
     Descriptions,
     Table,
     Button,
-    Space,
     message,
     Popover,
     InputNumber
@@ -15,15 +14,18 @@ import { use } from "react"
 import type { OrderDetailed } from "../types/orderDetailed"
 import { api } from "../api/api"
 import type { ShipmentItem } from "../types/shipmentItem"
+import { getRole } from "../utils/jwt"
 
 export default function CreateShipmentPage() {
 
     const { id } = useParams()
     const navigate = useNavigate()
-    
+
     const [order, setOrder] = useState<OrderDetailed | null>(null)
 
     const [shipmentItems, setShipmentItems] = useState<ShipmentItem[]>([])
+
+    const role = getRole()
 
     const columns = [
         {
@@ -59,9 +61,9 @@ export default function CreateShipmentPage() {
                             items.map(item =>
                                 item.product.id === record.productId
                                     ? {
-                                          ...item,
-                                          shipmentQuantity: value ?? 0
-                                      }
+                                        ...item,
+                                        shipmentQuantity: value ?? 0
+                                    }
                                     : item
                             )
                         )
@@ -100,7 +102,7 @@ export default function CreateShipmentPage() {
         }
     }, [order])
 
-     async function loadOrder() {
+    async function loadOrder() {
 
         if (!order) {
             return
@@ -177,7 +179,7 @@ export default function CreateShipmentPage() {
 
             message.success("Shipment created")
 
-            navigate(`/shipments/${response.data.id}`)
+            navigate(`/${role}/shipments/${response.data.id}`)
 
         } catch (error: any) {
 
@@ -191,28 +193,28 @@ export default function CreateShipmentPage() {
     return (
         <div className="p-8">
 
-            <Button 
+            <Button
                 type="link"
-                onClick={() => navigate(`/orders/${id}`)} 
-                style={{ 
-                    padding: 0, 
-                    marginBottom: 16, 
-                    display: 'flex', 
-                    justifyContent: 'flex-start' 
+                onClick={() => navigate(`/${role}/orders/${id}`)}
+                style={{
+                    padding: 0,
+                    marginBottom: 16,
+                    display: 'flex',
+                    justifyContent: 'flex-start'
                 }}
-           >
+            >
                 ← Back to Order
-           </Button>
+            </Button>
 
-           <Card 
-              title="Shipment"
-              style={{ marginBottom: 20 }}  
-              styles={{
-                  header: {
-                      textAlign: "left" as const
-                  }
-              }}
-           >
+            <Card
+                title="Shipment"
+                style={{ marginBottom: 20 }}
+                styles={{
+                    header: {
+                        textAlign: "left" as const
+                    }
+                }}
+            >
 
                 <Descriptions column={1}>
 
@@ -232,7 +234,7 @@ export default function CreateShipmentPage() {
                                 </div>
                             }
                         >
-                           <a>{order.shop.name}</a> 
+                            <a>{order.shop.name}</a>
                         </Popover>
                     </Descriptions.Item>
 

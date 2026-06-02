@@ -85,7 +85,7 @@ export default function OrderPage() {
                 <>
                     <Button
                         onClick={() => {
-                            navigate(`${role}/orders/${order.id}`)
+                            navigate(`${order.id}`)
                         }}
                         style={{ marginRight: 8 }}
                     >
@@ -131,14 +131,16 @@ export default function OrderPage() {
                         style={{ width: 500 }}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            navigate(`/orders/create`)
-                        }}
-                    >
-                        Create Order
-                    </Button>
+                    {role === "shopkeeper" && (
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                navigate(`create`)
+                            }}
+                        >
+                            Create Order
+                        </Button>
+                    )}
 
                 </div>
 
