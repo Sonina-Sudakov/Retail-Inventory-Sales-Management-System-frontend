@@ -194,7 +194,7 @@ function App() {
                     />
 
                     <Route
-                        path="shipments/create/:orderId"
+                        path="shipments/create/:id"
                         element={<CreateShipmentPage />}
                     />
 
