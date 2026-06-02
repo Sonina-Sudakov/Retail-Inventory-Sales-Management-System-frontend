@@ -14,7 +14,7 @@ import { use } from "react"
 import type { OrderDetailed } from "../types/orderDetailed"
 import { api } from "../api/api"
 import type { ShipmentItem } from "../types/shipmentItem"
-import { getRole } from "../utils/jwt"
+import { getRole, getUserId } from "../utils/jwt"
 
 export default function CreateShipmentPage() {
 
@@ -24,6 +24,7 @@ export default function CreateShipmentPage() {
     const [order, setOrder] = useState<OrderDetailed | null>(null)
 
     const [shipmentItems, setShipmentItems] = useState<ShipmentItem[]>([])
+    const user_id = getUserId()
 
     const role = getRole()
 
@@ -108,15 +109,15 @@ export default function CreateShipmentPage() {
 
         const data = response.data
 
-       setOrder({
-           id: data.id,
-           shop: data.to_shop,
-           createdBy: data.created_by,
-           status: data.status,
-           createdAt: data.created_at,
-           acceptedAt: data.accepted_at,
-           items: data.items
-       }) 
+        setOrder({
+            id: data.id,
+            shop: data.to_shop,
+            createdBy: data.created_by,
+            status: data.status,
+            createdAt: data.created_at,
+            acceptedAt: data.accepted_at,
+            items: data.items
+        })
     }
 
 
@@ -160,7 +161,7 @@ export default function CreateShipmentPage() {
         const request = {
             from_location: "WAREHOUSE",
             to_shop_id: order.shop.id,
-            created_by_id: 1,
+            created_by_id: user_id,
             items: shipmentItems.map(item => ({
                 product_id: item.product.id,
                 quantity: item.shipmentQuantity
@@ -168,10 +169,13 @@ export default function CreateShipmentPage() {
         }
 
         try {
-            console.log(request)
             const response = await api.post(
                 "/shipments/",
                 request
+            )
+
+            await api.put(
+                `orders/${order.id}/accept`
             )
 
             message.success("Shipment created")
@@ -266,7 +270,7 @@ export default function CreateShipmentPage() {
                 style={{ marginBottom: 20 }}
             >
                 <Table
-                    rowKey={(record) => record.product.id} 
+                    rowKey={(record) => record.product.id}
                     columns={columns}
                     dataSource={shipmentItems}
                     pagination={false}
