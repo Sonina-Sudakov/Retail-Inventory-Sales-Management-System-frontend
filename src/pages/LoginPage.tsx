@@ -2,11 +2,12 @@ import { Button, Card, Form, Input, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getRole } from '../utils/jwt';
 
 const { Title } = Typography;
 
 interface LoginForm {
-    login: string;
+    username: string;
     password: string;
 }
 
@@ -27,7 +28,19 @@ export default function LoginPage() {
 
             message.success('Successfully logged in');
 
-            navigate('/');
+            const role = getRole();
+
+            if (role === 'ADMIN') {
+                navigate('/admin');
+            }
+
+            if (role === 'SHOPKEEPER') {
+                navigate('/shopkeeper');
+            }
+
+            if (role === 'STOREKEEPER') {
+                navigate('/storekeeper');
+            }
         } catch {
             message.error('Invalid login or password');
         }
