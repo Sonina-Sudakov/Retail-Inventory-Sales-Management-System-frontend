@@ -25,6 +25,8 @@ import SalesPage from "./pages/SalesPage"
 import ShipmentDetailsPage from "./pages/ShipmentDetailsPage"
 import ThemeSwitcher from "./components/layout/ThemeSwitcher"
 import CreateShipmentForStorePage from "./pages/CreateShipmentForStorePage"
+import SaleDetailsPage from "./pages/SaleDetailsPage"
+import CreateSalePage from "./pages/CreateSalePage"
 
 function App() {
 
@@ -156,6 +158,16 @@ function App() {
                         element={<SalesPage />}
                     />
 
+                    <Route
+                        path="sales/:id"
+                        element={<SaleDetailsPage />}
+                    />
+
+                    <Route
+                        path="sales/create"
+                        element={<CreateSalePage />}
+                    />
+
                 </Route>
 
                 {/* STOREKEEPER AREA */}
@@ -192,6 +204,11 @@ function App() {
                     <Route
                         path="shipments"
                         element={<ShipmentsPage />}
+                    />
+
+                    <Route
+                        path="shipments/:id"
+                        element={<ShipmentDetailsPage />}
                     />
 
                     <Route

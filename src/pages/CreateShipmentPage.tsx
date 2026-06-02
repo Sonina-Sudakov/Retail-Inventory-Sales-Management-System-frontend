@@ -180,7 +180,7 @@ export default function CreateShipmentPage() {
 
             message.success("Shipment created")
 
-            navigate(`/${role}/shipments/${response.data.id}`)
+            navigate(`/warehouse/shipments/${response.data.id}`)
 
         } catch (error: any) {
 
