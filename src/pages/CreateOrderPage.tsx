@@ -241,6 +241,20 @@ export default function CreateOrderPage() {
                                                 />
                                             </Form.Item>
 
+                                            <div style={{ minWidth: 80 }}>
+                                                {
+                                                    products.find(
+                                                        p =>
+                                                            p.id ===
+                                                            form.getFieldValue([
+                                                                "items",
+                                                                field.name,
+                                                                "productId"
+                                                            ])
+                                                    )?.unit
+                                                }
+                                            </div>
+
                                             <Form.Item
                                                 {...restField}
                                                 label="Quantity"
@@ -255,13 +269,16 @@ export default function CreateOrderPage() {
                                                 <InputNumber min={1} />
                                             </Form.Item>
 
-                                            <Button
-                                                danger
-                                                disabled={fields.length === 1}
-                                                onClick={() => remove(field.name)}
-                                            >
-                                                Delete
-                                            </Button>
+
+                                            <Form.Item label=" ">
+                                                <Button
+                                                    danger
+                                                    disabled={fields.length === 1}
+                                                    onClick={() => remove(field.name)}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </Form.Item> 
 
                                         </Space>
                                     )

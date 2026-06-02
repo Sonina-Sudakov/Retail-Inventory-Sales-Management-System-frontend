@@ -242,13 +242,15 @@ export default function CreateShipmentForStorePage() {
                                                 <InputNumber min={1} />
                                             </Form.Item>
 
-                                            <Button
-                                                danger
-                                                disabled={fields.length === 1}
-                                                onClick={() => remove(field.name)}
-                                            >
-                                                Delete
-                                            </Button>
+                                            <Form.Item label=" ">
+                                                <Button
+                                                    danger
+                                                    disabled={fields.length === 1}
+                                                    onClick={() => remove(field.name)}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </Form.Item> 
 
                                         </Space>
                                     )
