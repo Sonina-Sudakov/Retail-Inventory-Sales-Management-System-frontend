@@ -173,34 +173,37 @@ export default function OrderDetailsPage() {
 
             </Card>
 
-            {
-                order.status === "PENDING" && role === "storekeeper" && (
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            marginTop: 20
-                        }}
-                    >
-                        <Space>
+            {order.status === "PENDING" && (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginTop: 20
+                    }}
+                >
+                    <Space>
+
+                        {role === "storekeeper" && (
                             <Button
                                 type="primary"
                                 onClick={handleAccept}
                             >
                                 Accept
                             </Button>
+                        )}
 
+                        {role !== "admin" && (
                             <Button
                                 danger
                                 onClick={handleCancel}
                             >
                                 Cancel
                             </Button>
-                        </Space>
-                    </div>
-                )
-            }
+                        )}
 
+                    </Space>
+                </div>
+            )}
         </div>
     )
 }
