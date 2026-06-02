@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 import { api } from "../api/api"
 import type { ShipmentShort } from "../types/shipmentShort"
@@ -65,6 +67,39 @@ export default function ShipmentPage() {
                 "Unknown error"
             )
         }
+    }
+
+    async function exportToExcel() {
+
+        const worksheet =
+            XLSX.utils.json_to_sheet(filteredShipments);
+
+        const workbook =
+            XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Shipments"
+        );
+
+        const excelBuffer =
+            XLSX.write(workbook, {
+                bookType: "xlsx",
+                type: "array"
+            });
+
+        const blob = new Blob(
+            [excelBuffer],
+            {
+                type: "application/octet-stream"
+            }
+        );
+
+        saveAs(
+            blob,
+            "shipments_report.xlsx"
+        );
     }
 
 
@@ -182,6 +217,14 @@ export default function ShipmentPage() {
                         style={{ width: 500 }}
                         onChange={(e) => setSearch(e.target.value)}
                     />
+
+                    <Button
+                        type="primary"
+                        onClick={exportToExcel}
+                    >
+                        Export Excel
+                    </Button>
+
                     {role === "storekeeper" && (
                         <Button
                             type="primary"
