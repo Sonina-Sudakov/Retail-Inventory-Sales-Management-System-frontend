@@ -65,7 +65,26 @@ export default function OrderPage() {
         {
             title: "Status",
             dataIndex: "status",
-            key: "status"
+            key: "status",
+            filters: [
+                {
+                    text: "Canceled",
+                    value: "CANCELED"
+                },
+                {
+                    text: "Accepted",
+                    value: "ACCEPTED"
+                },
+                {
+                    text: "Pending",
+                    value: "PENDING"
+                }
+            ],
+            defaultFilteredValue: ["PENDING"],
+
+            onFilter: (value, record) =>
+
+                record.status === value
         },
         {
             title: "Created At",
