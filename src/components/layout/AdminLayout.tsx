@@ -2,15 +2,27 @@ import { Layout } from "antd"
 import { Outlet } from "react-router-dom"
 
 import Sidebar from "../layout/Sidebar"
+import { menuItems } from "../../config/menu";
+import { getRole } from "../../utils/jwt";
 
 const { Content } = Layout
 
 export default function AdminLayout() {
 
-    return (
-        <Layout style={{ minHeight: "100vh" }}>
+    const role = getRole();
 
-            <Sidebar />
+    const items =
+        role && role in menuItems
+            ? menuItems[role as keyof typeof menuItems]
+            : [];
+
+    return (
+        <Layout
+            style={{
+                minHeight: "100vh"
+            }}
+        >
+            <Sidebar items={items} />
 
             <Layout>
 
