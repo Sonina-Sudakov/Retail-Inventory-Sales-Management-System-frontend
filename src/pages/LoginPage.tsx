@@ -39,7 +39,7 @@ export default function LoginPage() {
             }
 
             if (role === 'STOREKEEPER') {
-                navigate('/storekeeper');
+                navigate('/warehouse');
             }
         } catch {
             message.error('Invalid login or password');
