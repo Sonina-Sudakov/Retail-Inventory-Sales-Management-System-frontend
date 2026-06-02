@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import {
@@ -8,12 +8,17 @@ import {
     InputNumber,
     Select,
     Card,
-    message
+    message,
+    Popover
 } from "antd"
 
 import { api } from "../api/api"
 import type { Product } from "../types/product"
-import { getRole } from "../utils/jwt"
+import { getRole, getShopId, getUserId } from "../utils/jwt"
+import type { User } from "../types/user"
+import type { Shop } from "../types/shop"
+import { getShop } from "../api/shop"
+import { getUser } from "../api/user"
 
 export default function CreateOrderPage() {
 
@@ -22,6 +27,8 @@ export default function CreateOrderPage() {
     const navigate = useNavigate()
 
     const [products, setProducts] = useState<Product[]>([])
+    const [user, setUser] = useState<User>()
+    const [shop, setShop] = useState<Shop>()
 
     const items = Form.useWatch("items", form) || []
 
@@ -30,8 +37,12 @@ export default function CreateOrderPage() {
         .filter(Boolean)
 
     const role = getRole()?.toLowerCase()
+    const shop_id = getShopId()
+    const user_id = getUserId()
 
     useEffect(() => {
+        loadShop()
+        loadUser()
         loadProducts()
     }, [])
 
@@ -58,12 +69,23 @@ export default function CreateOrderPage() {
         setProducts(products)
     }
 
+    async function loadShop() {
+        const response = await getShop(shop_id)
+
+        setShop(response.data)
+    }
+
+    async function loadUser() {
+        const response = await getUser(user_id)
+
+        setUser(response.data)
+    }
 
     async function handleSubmit(values: any) {
 
         const request = {
-            to_shop_id: 1,
-            created_by_id: 7,
+            to_shop_id: shop_id,
+            created_by_id: user_id,
             count: values.items.length,
             items: values.items.map((item: any) => ({
                 product_id: item.productId,
@@ -76,7 +98,7 @@ export default function CreateOrderPage() {
 
             message.success("Order created")
 
-            navigate(`${role}/orders/${response.data.id}`)
+            navigate(`/${role}/orders/${response.data.id}`)
         }
         catch (error: any) {
             message.error(
@@ -91,7 +113,7 @@ export default function CreateOrderPage() {
         <div>
             <Button
                 type="link"
-                onClick={() => navigate("/orders")}
+                onClick={() => navigate(`/${role}/orders`)}
                 style={{
                     padding: 0,
                     marginBottom: 16,
@@ -120,13 +142,49 @@ export default function CreateOrderPage() {
                 >
 
                     <p>
-                        <strong>Shop:</strong> Temp Shop
+                        <strong>Shop: </strong>
+                        {shop ? (
+                            <Popover
+                                title="Shop Information"
+                                content={
+                                    <div>
+                                        <div>ID: {shop.id}</div>
+                                        <div>Name: {shop.name}</div>
+                                        <div>Contact face: {shop.contactFace}</div>
+                                        <div>Phone number: {shop.phoneNumber}</div>
+                                        <div>Email: {shop.email}</div>
+                                    </div>
+                                }
+                                trigger="hover"
+                            >
+                                <a>{shop.name}</a>
+                            </Popover>
+                        ) :
+                            <span>Loading shop...</span>
+                        }
                     </p>
 
                     <p>
-                        <strong>Created by:</strong> Temp User
+                        <strong>Created by: </strong>
+                        {user ? (
+                            <Popover
+                                title="User Information"
+                                content={
+                                    <div>
+                                        <div>ID: {user.id}</div>
+                                        <div>Username: {user.username}</div>
+                                        <div>Name: {user.fullname}</div>
+                                        <div>Role: {user.role}</div>
+                                    </div>
+                                }
+                                trigger="hover"
+                            >
+                                <a>{user.fullname}</a>
+                            </Popover>
+                        ) :
+                            <span>Loading user...</span>
+                        }
                     </p>
-                    <p></p>
 
                 </div>
 
@@ -140,69 +198,74 @@ export default function CreateOrderPage() {
 
                         {(fields, { add, remove }) => (
                             <Space
-                                direction="vertical"
+                                orientation="vertical"
                                 style={{ width: "100%" }}
                             >
-                                {fields.map(field => (
-                                    <Space
-                                        key={field.key}
-                                        align="center"
-                                    >
+                                {fields.map(field => {
 
-                                        <Form.Item
-                                            {...field}
-                                            label="Product"
-                                            name={[field.name, "productId"]}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "Select product"
-                                                }
-                                            ]}
+                                    const { key, ...restField } = field;
+
+                                    return (
+                                        <Space
+                                            key={field.key}
+                                            align="center"
                                         >
-                                            <Select
-                                                style={{ width: 250 }}
-                                                options={products
-                                                    .filter(product =>
-                                                        !selectedProductIds.includes(product.id) ||
-                                                        product.id === form.getFieldValue([
-                                                            "items",
-                                                            field.name,
-                                                            "productId"
-                                                        ])
-                                                    )
-                                                    .map(product => ({
-                                                        value: product.id,
-                                                        label: `${product.name} (#${product.id})`
-                                                    }))
-                                                }
-                                            />
-                                        </Form.Item>
 
-                                        <Form.Item
-                                            {...field}
-                                            label="Quantity"
-                                            name={[field.name, "quantity"]}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "Enter quantity"
-                                                }
-                                            ]}
-                                        >
-                                            <InputNumber min={1} />
-                                        </Form.Item>
+                                            <Form.Item
+                                                {...restField}
+                                                label="Product"
+                                                name={[field.name, "productId"]}
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: "Select product"
+                                                    }
+                                                ]}
+                                            >
+                                                <Select
+                                                    style={{ width: 250 }}
+                                                    options={products
+                                                        .filter(product =>
+                                                            !selectedProductIds.includes(product.id) ||
+                                                            product.id === form.getFieldValue([
+                                                                "items",
+                                                                field.name,
+                                                                "productId"
+                                                            ])
+                                                        )
+                                                        .map(product => ({
+                                                            value: product.id,
+                                                            label: `${product.name} (#${product.id})`
+                                                        }))
+                                                    }
+                                                />
+                                            </Form.Item>
 
-                                        <Button
-                                            danger
-                                            disabled={fields.length === 1}
-                                            onClick={() => remove(field.name)}
-                                        >
-                                            Delete
-                                        </Button>
+                                            <Form.Item
+                                                {...restField}
+                                                label="Quantity"
+                                                name={[field.name, "quantity"]}
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: "Enter quantity"
+                                                    }
+                                                ]}
+                                            >
+                                                <InputNumber min={1} />
+                                            </Form.Item>
 
-                                    </Space>
-                                ))}
+                                            <Button
+                                                danger
+                                                disabled={fields.length === 1}
+                                                onClick={() => remove(field.name)}
+                                            >
+                                                Delete
+                                            </Button>
+
+                                        </Space>
+                                    )
+                                })}
 
                                 <Form.Item>
                                     <Button
