@@ -6,7 +6,6 @@ import type { OrderDetailed } from "../types/orderDetailed"
 
 import {
     Card,
-    Typography,
     Descriptions,
     Table,
     Button,
