@@ -4,14 +4,18 @@ import { getStocks } from "../api/shop"
 import { getShopId } from "../utils/jwt"
 import type { Shop } from "../types/shop"
 import { Button, Card, Input, Popover, Table, Typography } from "antd"
+import SaveShopStockModal from "../components/shop/SaveShopStockModal"
 
 export default function ShopStocksPage() {
 
-    const shop_id = getShopId()
+    const shop_id: number = parseInt(getShopId(), 10)
 
-    const [shop, setShop] = useState<Shop>(null)
+    const [shop, setShop] = useState<Shop | null>(null)
     const [stocks, setStocks] = useState<ShopStock[]>([])
     const [search, setSearch] = useState("")
+
+    const [saveOpen, setSaveOpen] = useState(false)
+    const [selectedStock, setSelectedStock] = useState<ShopStock | null>(null)
 
     async function loadStocks() {
 
@@ -22,10 +26,14 @@ export default function ShopStocksPage() {
         const stocks: ShopStock[] = response.data.items.map((stock: any) => ({
             productRaw: stock.product,
             product: stock.product.name,
+            product_id: stock.product.id,
+            shop_id: shop_id,
             units: stock.product.unit,
             min_quantity: stock.min_quantity,
             quantity: stock.quantity,
         }))
+
+        console.log(stocks)
 
         setStocks(stocks)
     }
@@ -85,6 +93,23 @@ export default function ShopStocksPage() {
             title: "Min. Quantity",
             dataIndex: "min_quantity",
             key: "min_quantity"
+        },
+        {
+            title: "Actions",
+            key: "actions",
+            render: (_: unknown, stock: ShopStock) => (
+                <>
+                    <Button
+                        onClick={() => {
+                            setSelectedStock(stock)
+                            setSaveOpen(true)
+                        }}
+                        style={{ marginRight: 8 }}
+                    >
+                        Update Min. Quantity
+                    </Button>
+                </>
+            )
         }
     ]
 
@@ -139,6 +164,16 @@ export default function ShopStocksPage() {
                 />
 
             </Card>
+
+            <SaveShopStockModal
+                open={saveOpen}
+                stock={selectedStock}
+                onClose={() => {
+                    setSaveOpen(false)
+                    setSelectedStock(null)
+                }}
+                onSuccess={loadStocks}
+            />
         </div>
     )
 }
