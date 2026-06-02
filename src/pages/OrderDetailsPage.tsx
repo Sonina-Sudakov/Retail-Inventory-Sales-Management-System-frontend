@@ -11,7 +11,8 @@ import {
     Table,
     Button,
     Space,
-    message
+    message,
+    Popover
 } from "antd"
 
 export default function OrderDetailsPage() {
@@ -91,11 +92,33 @@ export default function OrderDetailsPage() {
                 <Descriptions column={1}>
 
                     <Descriptions.Item label="Shop">
-                        {order.shop.name}
+                        <Popover
+                            title="Shop Information"
+                            content={
+                                <div>
+                                    <div>Contact Face: {order.shop.contact_face}</div>
+                                    <div>Address: {order.shop.address}</div>
+                                    <div>Email: {order.shop.email}</div>
+                                    <div>Phone: {order.shop.phone_number}</div>
+                                </div>
+                            }
+                        >
+                           <a>{order.shop.name}</a> 
+                        </Popover>
                     </Descriptions.Item>
 
                     <Descriptions.Item label="Created By">
-                        {order.createdBy.fullname}
+                        <Popover
+                            title="User Information"
+                            content={
+                                <div>
+                                    <div>Username: {order.createdBy.username}</div>
+                                    <div>Role: {order.createdBy.role}</div>
+                                </div>
+                            }
+                        >
+                            <a>{order.createdBy.fullname}</a>
+                        </Popover>
                     </Descriptions.Item>
 
                     <Descriptions.Item label="Status">
