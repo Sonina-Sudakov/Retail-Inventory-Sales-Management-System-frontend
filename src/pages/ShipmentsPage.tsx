@@ -14,7 +14,7 @@ import {
     Typography,
     message
 } from "antd"
-import { getRole, getUserId } from "../utils/jwt"
+import { getRole, getShopId, getUserId } from "../utils/jwt"
 
 
 export default function ShipmentPage() {
@@ -27,12 +27,20 @@ export default function ShipmentPage() {
 
     const role = getRole()?.toLowerCase()
     const userId = getUserId()
+    const shopId = getShopId()
 
     async function loadShipments() {
+        let response
 
-        const response = await api.get("/shipments/all")
+        if (role != "shopkeeper") {
+            response = await api.get("/shipments/all")
+        } else {
+            response = await api.get(`/shipments/shop?id=${shopId}`)
+        }
 
-        const shipments: ShipmentShort[] = response.data.items.map(shipment => ({
+        const data = response.data
+
+        const shipments: ShipmentShort[] = data.items.map(shipment => ({
             id: shipment.id,
             fromLocation: shipment.from_location,
             toLocation: shipment.to_shop ? shipment.to_shop.name : "Warehouse",
@@ -166,15 +174,15 @@ export default function ShipmentPage() {
                         Details
                     </Button>
 
-                    {role === "shopkeeper" && 
+                    {role === "shopkeeper" &&
                         shipment.status === "CREATED" && (
-                        <Button
-                            type="primary"
-                            onClick={() => handleAccept(shipment.id)}
-                        >
-                            Accept
-                        </Button>
-                    )}
+                            <Button
+                                type="primary"
+                                onClick={() => handleAccept(shipment.id)}
+                            >
+                                Accept
+                            </Button>
+                        )}
                 </>
             )
         }
@@ -185,7 +193,7 @@ export default function ShipmentPage() {
             String(value).toLowerCase().includes(search.toLowerCase())
         )
     )
-    
+
     console.log(filteredShipments)
 
     return (
