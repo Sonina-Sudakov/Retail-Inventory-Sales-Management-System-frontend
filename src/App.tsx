@@ -11,12 +11,16 @@ import UsersPage from "./pages/UsersPage"
 import ProductsPage from "./pages/ProductsPage"
 import ShopsPage from "./pages/ShopsPage"
 import OrdersPage from "./pages/OrdersPage"
-import DeliveriesPage from "./pages/ShipmentsPage"
 import LoginPage from "./pages/LoginPage"
 import OrderDetailsPage from "./pages/OrderDetailsPage"
 import ShipmentsPage from "./pages/ShipmentsPage"
 import CreateOrderPage from "./pages/CreateOrderPage"
 import CreateShipmentPage from "./pages/CreateShipmentPage"
+import ProtectedRoute from "./components/ProtectedRoute"
+import ShopPage from "./pages/ShopsPage"
+import WarehouseLayout from "./components/layout/WarehouseLayout"
+import ShopkeeperLayout from "./components/layout/ShopkeeperLayout"
+import WarehouseStocksPage from "./pages/WarehouseStocksPage"
 
 function App() {
 
@@ -26,65 +30,182 @@ function App() {
 
             <Routes>
 
-                <Route element={<AdminLayout />}>
+                {/* LOGIN */}
+
+                <Route
+                    path="/login"
+                    element={<LoginPage />}
+                />
+
+                {/* ADMIN AREA */}
+
+                <Route
+                    path="/admin"
+                    element={
+                        <ProtectedRoute role="ADMIN">
+                            <AdminLayout />
+                        </ProtectedRoute>
+                    }
+                >
+
+                    {/* default redirect in /admin */}
 
                     <Route
-                        path="/users"
+                        index
+                        element={<Navigate to="users" replace />}
+                    />
+
+                    <Route
+                        path="users"
                         element={<UsersPage />}
                     />
 
                     <Route
-                        path="/products"
+                        path="products"
                         element={<ProductsPage />}
                     />
 
                     <Route
-                        path="/shops"
+                        path="shops"
                         element={<ShopsPage />}
                     />
 
                     <Route
-                        path="/orders"
+                        path="orders"
                         element={<OrdersPage />}
                     />
 
                     <Route
-                        path="/orders/:id"
+                        path="orders/:id"
                         element={<OrderDetailsPage />}
                     />
 
                     <Route
-                        path="/orders/create"
-                        element={<CreateOrderPage />}
-                    />
-
-                    <Route
-                        path="/shipments"
+                        path="shipments"
                         element={<ShipmentsPage />}
                     />
 
                     <Route
-                        path="/shipments/create/:orderId"
-                        element={<CreateShipmentPage />}
+                        path="shipments/:id"
+                        element={<ShipmentsPage />}
                     />
-
 
                 </Route>
 
+                {/* SHOPKEEPER AREA */}
+
                 <Route
-                    path="*"
-                    element={<Navigate to="/users" />}
+                    path="/shopkeeper"
+                    element={
+                        <ProtectedRoute role="SHOPKEEPER">
+                            <ShopkeeperLayout />
+                        </ProtectedRoute>
+                    }
+                >
+
+                    {/* default redirect in /shopkeeper */}
+
+                    <Route
+                        index
+                        element={<Navigate to="shop" replace />}
+                    />
+
+                    <Route
+                        path="shop"
+                        element={<ShopPage />}
+                    />
+
+                    <Route
+                        path="orders"
+                        element={<OrdersPage />}
+                    />
+
+                    <Route
+                        path="orders/create"
+                        element={<CreateOrderPage />}
+                    />
+
+                    <Route
+                        path="orders/:id"
+                        element={<OrderDetailsPage />}
+                    />
+
+                    <Route
+                        path="shipments"
+                        element={<ShipmentsPage />}
+                    />
+
+                    {/*
+                    <Route
+                        path="shipments/:id"
+                        element={<ShipmentDetailed />}
+                    />
+                    */}
+
+                </Route>
+
+                {/* STOREKEEPER AREA */}
+
+                <Route
+                    path="/warehouse"
+                    element={
+                        <ProtectedRoute role="STOREKEEPER">
+                            <WarehouseLayout />
+                        </ProtectedRoute>
+                    }
+                >
+
+                    <Route
+                        index
+                        element={<Navigate to="stocks" replace />}
+                    />
+
+                    <Route
+                        path="stocks"
+                        element={<WarehouseStocksPage />}
+                    />
+
+                    <Route
+                        path="orders"
+                        element={<OrdersPage />}
+                    />
+
+                    <Route
+                        path="orders/:id"
+                        element={<OrderDetailsPage />}
+                    />
+
+                    <Route
+                        path="shipments"
+                        element={<ShipmentsPage />}
+                    />
+
+                    <Route
+                        path="shipments/create/:orderId"
+                        element={<CreateShipmentPage />}
+                    />
+
+                </Route>
+
+                {/* ROOT REDIRECT */}
+
+                <Route
+                    path="/"
+                    element={<Navigate to="/login" replace />}
                 />
 
+                {/* fallback */}
 
-                <Route path="/login" element={<LoginPage />} />
-
+                <Route
+                    path="*"
+                    element={<Navigate to="/login" replace />}
+                />
 
             </Routes>
 
         </BrowserRouter>
 
-    )
-}
+    );
 
+}
 export default App
