@@ -13,3 +13,27 @@ export function getRole() {
 
     return payload.role;
 }
+
+export function getShopId() {
+    const token = localStorage.getItem('access_token')
+
+    if (!token) {
+        return null;
+    }
+
+    const payload: any = jwtDecode(token)
+
+    return payload.shop_id
+}
+
+export function getUserId() {
+    const token = localStorage.getItem('access_token')
+
+    if (!token) {
+        return null;
+    }
+
+    const payload: any = jwtDecode(token)
+
+    return payload.sub
+}
