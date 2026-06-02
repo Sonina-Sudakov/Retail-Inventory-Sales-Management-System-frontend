@@ -17,10 +17,12 @@ import ShipmentsPage from "./pages/ShipmentsPage"
 import CreateOrderPage from "./pages/CreateOrderPage"
 import CreateShipmentPage from "./pages/CreateShipmentPage"
 import ProtectedRoute from "./components/ProtectedRoute"
-import ShopPage from "./pages/ShopsPage"
 import WarehouseLayout from "./components/layout/WarehouseLayout"
 import ShopkeeperLayout from "./components/layout/ShopkeeperLayout"
 import WarehouseStocksPage from "./pages/WarehouseStocksPage"
+import ShopStocksPage from "./pages/ShopStocksPage"
+import SalesPage from "./pages/SalesPage"
+import ShipmentDetailsPage from "./pages/ShipmentDetailsPage"
 
 function App() {
 
@@ -90,6 +92,11 @@ function App() {
                         element={<ShipmentsPage />}
                     />
 
+                    <Route
+                        path="sales"
+                        element={<SalesPage />}
+                    />
+
                 </Route>
 
                 {/* SHOPKEEPER AREA */}
@@ -107,12 +114,12 @@ function App() {
 
                     <Route
                         index
-                        element={<Navigate to="shop" replace />}
+                        element={<Navigate to="stocks" replace />}
                     />
 
                     <Route
-                        path="shop"
-                        element={<ShopPage />}
+                        path="stocks"
+                        element={<ShopStocksPage />}
                     />
 
                     <Route
@@ -135,12 +142,15 @@ function App() {
                         element={<ShipmentsPage />}
                     />
 
-                    {/*
                     <Route
                         path="shipments/:id"
-                        element={<ShipmentDetailed />}
+                        element={<ShipmentDetailsPage />}
                     />
-                    */}
+
+                    <Route
+                        path="sales"
+                        element={<SalesPage />}
+                    />
 
                 </Route>
 
