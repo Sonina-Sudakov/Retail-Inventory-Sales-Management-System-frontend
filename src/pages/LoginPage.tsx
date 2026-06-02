@@ -3,6 +3,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getRole } from '../utils/jwt';
+import { theme } from "antd";
 
 const { Title } = Typography;
 
@@ -13,6 +14,7 @@ interface LoginForm {
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const { token } = theme.useToken();
 
     const onFinish = async (values: LoginForm) => {
         try {
@@ -53,7 +55,7 @@ export default function LoginPage() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                background: '#f5f5f5',
+                background: token.colorBgContainer,
             }}
         >
             <Card
