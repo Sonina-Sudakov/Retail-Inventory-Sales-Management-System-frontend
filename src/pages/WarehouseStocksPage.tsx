@@ -212,7 +212,7 @@ export default function WarehouseStocksPage() {
                 .includes(search.toLowerCase())
 
         const foundInProduct =
-            stock.product
+            stock?.product
                 .toLowerCase()
                 .includes(search.toLowerCase())
 

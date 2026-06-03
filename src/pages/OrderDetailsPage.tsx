@@ -115,10 +115,10 @@ export default function OrderDetailsPage() {
                             title="Shop Information"
                             content={
                                 <div>
-                                    <div>Contact Face: {order.shop.contact_face}</div>
+                                    <div>Contact Face: {order.shop.contactFace}</div>
                                     <div>Address: {order.shop.address}</div>
                                     <div>Email: {order.shop.email}</div>
-                                    <div>Phone: {order.shop.phone_number}</div>
+                                    <div>Phone: {order.shop.phoneNumber}</div>
                                 </div>
                             }
                         >

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
-import { Form, Input, InputNumber, Modal, message } from "antd"
+import { Form, InputNumber, Modal, message } from "antd"
 import { api } from "../../api/api"
-import type { Shop } from "../../types/shop"
 import type { ShopStock } from "../../types/shopStock"
 
 

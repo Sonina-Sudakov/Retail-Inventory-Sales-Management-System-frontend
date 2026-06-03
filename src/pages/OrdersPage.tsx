@@ -125,7 +125,7 @@ export default function OrderPage() {
             ],
             defaultFilteredValue: ["PENDING"],
 
-            onFilter: (value, record) =>
+            onFilter: (value: string, record: OrderShort) =>
 
                 record.status === value
         },

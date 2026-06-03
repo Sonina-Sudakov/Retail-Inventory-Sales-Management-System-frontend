@@ -5,7 +5,6 @@ import { saveAs } from "file-saver"
 import type { ShopStock } from "../types/shopStock"
 import { getStocks } from "../api/shop"
 import { getShopId } from "../utils/jwt"
-import type { Shop } from "../types/shop"
 import { Button, Card, Input, Popover, Table, Typography } from "antd"
 import SaveShopStockModal from "../components/shop/SaveShopStockModal"
 
@@ -13,7 +12,6 @@ export default function ShopStocksPage() {
 
     const shop_id: number = parseInt(getShopId(), 10)
 
-    const [shop, setShop] = useState<Shop | null>(null)
     const [stocks, setStocks] = useState<ShopStock[]>([])
     const [search, setSearch] = useState("")
 
@@ -24,11 +22,7 @@ export default function ShopStocksPage() {
 
         const response = await getStocks(shop_id)
 
-        setShop(response.data.shop)
-
-       const stocks: ShopStock[] = response.data.items.map((stock: any) => ({
-            shop_id: response.data.shop.id,
-
+        const stocks: ShopStock[] = response.data.items.map((stock: any) => ({
             productRaw: stock.product,
 
             product_id: stock.product.id,
@@ -39,14 +33,14 @@ export default function ShopStocksPage() {
 
             min_quantity: stock.min_quantity,
             quantity: stock.quantity
-        })) 
+        }))
 
         console.log(stocks)
 
         setStocks(stocks)
     }
 
-    
+
     async function createCertificate(stock: ShopStock) {
 
         const data = [
@@ -164,11 +158,11 @@ export default function ShopStocksPage() {
                     >
                         Update Min. Quantity
                     </Button>
-                <Button
-                    onClick={() => createCertificate(stock)}
-                >
-                    Certificate
-                </Button>
+                    <Button
+                        onClick={() => createCertificate(stock)}
+                    >
+                        Certificate
+                    </Button>
                 </>
             )
         }
