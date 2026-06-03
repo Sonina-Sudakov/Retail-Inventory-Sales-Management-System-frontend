@@ -110,11 +110,11 @@ export default function CreateShipmentPage() {
 
         setOrder({
             id: data.id,
-            shop: data.to_shop,
-            createdBy: data.created_by,
+            shop: data.toShop,
+            createdBy: data.createdBy,
             status: data.status,
-            createdAt: data.created_at,
-            acceptedAt: data.accepted_at,
+            createdAt: data.createdAt,
+            acceptedAt: data.acceptedAt,
             items: data.items
         })
     }
@@ -138,10 +138,10 @@ export default function CreateShipmentPage() {
                     productName: item.product.name,
                     unit: item.product.unit,
                     requestedQuantity: item.quantity,
-                    availableQuantity: response.data.total_quantity,
+                    availableQuantity: response.data.totalQuantity,
                     shipmentQuantity: Math.min(
                         item.quantity,
-                        response.data.total_quantity
+                        response.data.totalQuantity
                     )
                 }
             })
@@ -179,7 +179,7 @@ export default function CreateShipmentPage() {
 
             message.success("Shipment created")
 
-            navigate(`/warehouse/shipments/${response.data.id}`)
+            navigate(`/${role}/shipments/${response.data.id}`)
 
         } catch (error: any) {
 

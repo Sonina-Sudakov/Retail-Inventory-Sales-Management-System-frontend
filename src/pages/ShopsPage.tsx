@@ -7,10 +7,7 @@ import type { Shop } from "../types/shop"
 import {
     Table,
     Input,
-    Select,
     Button,
-    Card,
-    Space,
     Typography,
     Popconfirm
 } from "antd"
@@ -33,8 +30,8 @@ export default function ShopPage() {
             id: shop.id,
             name: shop.name,
             address: shop.address,
-            contactFace: shop.contact_face,
-            phoneNumber: shop.phone_number,
+            contactFace: shop.contactFace,
+            phoneNumber: shop.phoneNumber,
             email: shop.email
         }))
 
@@ -90,38 +87,38 @@ export default function ShopPage() {
             title: "Actions",
             key: "actions",
             render: (_: unknown, shop: Shop) => (
-               <>
-                <Button
-                    onClick={() => {
-                        console.log("CREATE CLICK")
-                        setSelectedShop(shop)
-                        setSaveOpen(true)
-                    }}
-                    style={{ marginRight: 8 , marginLeft: 32}}
-                >
-                    Update Info
-                </Button>
-
-                <Popconfirm
-                    title="Delete shop?"
-                    onConfirm={() => deleteShop(shop.id)}
-                >
-                    <Button danger>
-                        Delete
+                <>
+                    <Button
+                        onClick={() => {
+                            console.log("CREATE CLICK")
+                            setSelectedShop(shop)
+                            setSaveOpen(true)
+                        }}
+                        style={{ marginRight: 8, marginLeft: 32 }}
+                    >
+                        Update Info
                     </Button>
-                </Popconfirm>
-              </>            
+
+                    <Popconfirm
+                        title="Delete shop?"
+                        onConfirm={() => deleteShop(shop.id)}
+                    >
+                        <Button danger>
+                            Delete
+                        </Button>
+                    </Popconfirm>
+                </>
             )
         }
     ]
 
-   const filteredShops = shops.filter(shop =>
+    const filteredShops = shops.filter(shop =>
         Object.values(shop).some(value =>
             String(value).toLowerCase().includes(search.toLowerCase())
         )
-    ) 
+    )
 
-   return (
+    return (
         <div className="p-8">
 
             <Typography.Title
@@ -134,44 +131,41 @@ export default function ShopPage() {
                 Shops
             </Typography.Title>
 
-            <Card>
-
-               <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 16
-                    }}
-                >
-                    <Input
-                        placeholder="Search shops"
-                        value={search}
-                        style={{ width: 500 }}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setSelectedShop(null) 
-                            setSaveOpen(true)
-                        }}
-                    >
-                        Create Shop
-                    </Button>
-                </div> 
-                
-                <Table
-                    rowKey="id"
-                    dataSource={filteredShops}
-                    columns={columns}
-                    pagination={{
-                        pageSize: 10
-                    }}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search shops"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
 
-            </Card>
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        setSelectedShop(null)
+                        setSaveOpen(true)
+                    }}
+                >
+                    Create Shop
+                </Button>
+            </div>
+
+            <Table
+                rowKey="id"
+                dataSource={filteredShops}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
+
 
             <SaveShopModal
                 open={saveOpen}
@@ -183,8 +177,8 @@ export default function ShopPage() {
                 onSuccess={loadShops}
             />
 
-            </div>
+        </div>
 
-    ) 
+    )
 
 }

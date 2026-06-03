@@ -30,7 +30,7 @@ export default function SalesPage() {
             id: sale.id,
             shop: sale.shop,
             createdBy: sale.user.fullname,
-            createdAt: new Date(sale.created_at).toLocaleString(),
+            createdAt: new Date(sale.createdAt).toLocaleString(),
         }))
 
         setSales(sales)
@@ -69,9 +69,9 @@ export default function SalesPage() {
                 title: 'Actions',
                 key: 'actions',
                 render: (_: unknown, sale: SaleShort) => (
-                    <Button 
-                        style={{marginLeft: 8}}
-                        type="primary" 
+                    <Button
+                        style={{ marginLeft: 8 }}
+                        type="primary"
                         onClick={() => navigate(`${sale.id}`)}>
                         Details
                     </Button>
@@ -109,7 +109,7 @@ export default function SalesPage() {
                 }}
             >
                 <Input
-                    placeholder="Search orders"
+                    placeholder="Search sales"
                     value={search}
                     style={{ width: 500 }}
                     onChange={(e) => setSearch(e.target.value)}

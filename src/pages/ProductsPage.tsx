@@ -10,7 +10,6 @@ import {
     Table,
     Input,
     Button,
-    Card,
     Typography,
     Popconfirm
 } from "antd"
@@ -141,7 +140,8 @@ export default function ProductPage() {
         {
             title: "Price",
             dataIndex: "price",
-            key: "price"
+            key: "price",
+            sorter: (a: any, b: any) => a.price - b.price
         },
         {
             title: "Origin",
@@ -153,50 +153,50 @@ export default function ProductPage() {
             title: "Actions",
             key: "actions",
             render: (_: unknown, product: Product) => (
-               <>
-                <Button
-                    onClick={() => {
-                        setSelectedProduct(product)
-                        setSaveOpen(true)
-                    }}
-                    style={{ marginRight: 8, marginLeft: 32}}
-                >
-                    Update Info
-                </Button>
-
-                <Popconfirm
-                    title="Delete product?"
-                    onConfirm={() => deleteProduct(product.id)}
-                >
-                    <Button 
-                        danger
-                        style={{ marginRight: 8}}
-
+                <>
+                    <Button
+                        onClick={() => {
+                            setSelectedProduct(product)
+                            setSaveOpen(true)
+                        }}
+                        style={{ marginRight: 8, marginLeft: 32 }}
                     >
-                        Delete
+                        Update Info
                     </Button>
-                </Popconfirm>
 
-                <Button
-                    onClick={() => createNetworkCertificate(product)}
-                    style={{ marginRight: 8 }}
-                >
-                    Certificate
-                </Button>
+                    <Popconfirm
+                        title="Delete product?"
+                        onConfirm={() => deleteProduct(product.id)}
+                    >
+                        <Button
+                            danger
+                            style={{ marginRight: 8 }}
 
-              </> 
+                        >
+                            Delete
+                        </Button>
+                    </Popconfirm>
+
+                    <Button
+                        onClick={() => createNetworkCertificate(product)}
+                        style={{ marginRight: 8 }}
+                    >
+                        Certificate
+                    </Button>
+
+                </>
 
             )
         }
     ]
 
-   const filteredProducts = products.filter(product =>
+    const filteredProducts = products.filter(product =>
         Object.values(product).some(value =>
             String(value).toLowerCase().includes(search.toLowerCase())
         )
-    ) 
+    )
 
-   return (
+    return (
         <div className="p-8">
 
             <Typography.Title
@@ -209,44 +209,40 @@ export default function ProductPage() {
                 Products
             </Typography.Title>
 
-            <Card>
-
-               <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 16
-                    }}
-                >
-                    <Input
-                        placeholder="Search products"
-                        value={search}
-                        style={{ width: 500 }}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setSelectedProduct(null) 
-                            setSaveOpen(true)
-                        }}
-                    >
-                        Create Product
-                    </Button>
-                </div> 
-                
-                <Table
-                    rowKey="id"
-                    dataSource={filteredProducts}
-                    columns={columns}
-                    pagination={{
-                        pageSize: 10
-                    }}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search products"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
 
-            </Card>
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        setSelectedProduct(null)
+                        setSaveOpen(true)
+                    }}
+                >
+                    Create Product
+                </Button>
+            </div>
+
+            <Table
+                rowKey="id"
+                dataSource={filteredProducts}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
 
             <SaveProductModal
                 open={saveOpen}
@@ -258,9 +254,9 @@ export default function ProductPage() {
                 onSuccess={loadProducts}
             />
 
-            </div>
+        </div>
 
-    ) 
+    )
 
 }
 

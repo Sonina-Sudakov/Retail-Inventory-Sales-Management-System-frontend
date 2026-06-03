@@ -5,12 +5,12 @@ import { saveAs } from "file-saver"
 import type { ShopStock } from "../types/shopStock"
 import { getStocks } from "../api/shop"
 import { getShopId } from "../utils/jwt"
-import { Button, Card, Input, Popover, Table, Typography } from "antd"
+import { Button, Input, Popover, Table, Typography } from "antd"
 import SaveShopStockModal from "../components/shop/SaveShopStockModal"
 
 export default function ShopStocksPage() {
 
-    const shop_id: number = parseInt(getShopId(), 10)
+    const shopId: number = parseInt(getShopId(), 10)
 
     const [stocks, setStocks] = useState<ShopStock[]>([])
     const [search, setSearch] = useState("")
@@ -20,18 +20,18 @@ export default function ShopStocksPage() {
 
     async function loadStocks() {
 
-        const response = await getStocks(shop_id)
+        const response = await getStocks(shopId)
 
         const stocks: ShopStock[] = response.data.items.map((stock: any) => ({
             productRaw: stock.product,
-
+            shop_id: shopId,
             product_id: stock.product.id,
             product: stock.product.name,
             units: stock.product.unit,
             type: stock.product.type,
             price: stock.product.price,
 
-            min_quantity: stock.min_quantity,
+            min_quantity: stock.minQuantity,
             quantity: stock.quantity
         }))
 
@@ -51,7 +51,7 @@ export default function ShopStocksPage() {
                 Unit: stock.units,
                 Price: stock.price,
                 Quantity: stock.quantity,
-                MinQuantity: stock.min_quantity,
+                MinQuantity: stock.minQuantity,
                 GeneratedAt: new Date().toLocaleString()
             }
         ]
@@ -126,18 +126,20 @@ export default function ShopStocksPage() {
             key: "quantity",
             render: (text: number, record: any) => {
                 const isLowStock = record.quantity < record.min_quantity;
+                const isGreatStock = record.quantity >= record.min_quantity * 2;
 
                 return (
                     <span
                         style={{
-                            color: isLowStock ? "#ff4d4f" : "inherit",
-                            fontWeight: isLowStock ? "bold" : "normal"
+                            color: isLowStock ? "#ff4d4f" : isGreatStock ? "#00cc00" : "inherit",
+                            fontWeight: isLowStock || isGreatStock ? "bold" : "normal"
                         }}
                     >
                         {text}
                     </span>
                 );
-            }
+            },
+            sorter: (a: any, b: any) => a.quantity - b.quantity
         },
         {
             title: "Min. Quantity",
@@ -190,35 +192,30 @@ export default function ShopStocksPage() {
                 Stocks
             </Typography.Title>
 
-
-            <Card>
-
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 16
-                    }}
-                >
-                    <Input
-                        placeholder="Search stocks"
-                        value={search}
-                        style={{ width: 500 }}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
-
-                <Table
-                    rowKey="product"
-                    dataSource={filteredStocks}
-                    columns={columns}
-                    pagination={{
-                        pageSize: 10
-                    }}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search stocks"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
+            </div>
 
-            </Card>
+            <Table
+                rowKey="product"
+                dataSource={filteredStocks}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
 
             <SaveShopStockModal
                 open={saveOpen}

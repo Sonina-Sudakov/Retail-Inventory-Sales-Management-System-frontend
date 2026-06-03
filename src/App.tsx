@@ -173,7 +173,7 @@ function App() {
                 {/* STOREKEEPER AREA */}
 
                 <Route
-                    path="/warehouse"
+                    path="/storekeeper"
                     element={
                         <ProtectedRoute role="STOREKEEPER">
                             <WarehouseLayout />

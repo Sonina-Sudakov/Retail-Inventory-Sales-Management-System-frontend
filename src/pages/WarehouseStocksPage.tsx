@@ -11,7 +11,6 @@ import {
     Table,
     Input,
     Button,
-    Card,
     Space,
     Typography,
     Popconfirm
@@ -38,7 +37,7 @@ export default function WarehouseStocksPage() {
 
         const stocks: WarehouseStock[] = response.data.items.map((stock: any) => ({
             id: stock.id,
-            cell_code: stock.cell_code,
+            cell_code: stock.cellCode,
             product_id: stock.product?.id,
             product: stock.product?.name ?? "-",
             quantity: stock.quantity
@@ -65,13 +64,13 @@ export default function WarehouseStocksPage() {
                 Product: data.product.name,
                 Unit: data.product.unit,
                 Type: data.product.type,
-                TotalQuantity: data.total_quantity,
+                TotalQuantity: data.totalQuantity,
                 GeneratedAt: new Date().toLocaleString()
             }
         ]
 
         const locations = data.items.map((item: any) => ({
-            CellCode: item.cell_code,
+            CellCode: item.cellCode,
             Quantity: item.quantity
         }))
 
@@ -135,6 +134,7 @@ export default function WarehouseStocksPage() {
             title: "Quantity",
             dataIndex: "quantity",
             key: "quantity",
+            sorter: (a: any, b: any) => a.quantity - b.quantity
         },
         {
             title: "Actions",
@@ -142,7 +142,7 @@ export default function WarehouseStocksPage() {
             render: (_: unknown, stock: WarehouseStock) => (
                 <Space>
                     <Button
-                        style={{marginLeft: 32}}
+                        style={{ marginLeft: 32 }}
                         onClick={() => {
                             setSelectedStock(stock)
                             setStoreOpen(true)
@@ -232,43 +232,39 @@ export default function WarehouseStocksPage() {
                 Stocks
             </Typography.Title>
 
-            <Card>
-
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 16
-                    }}
-                >
-                    <Input
-                        placeholder="Search stocks"
-                        value={search}
-                        style={{ width: 500 }}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setCreateOpen(true)
-                        }}
-                    >
-                        Create Cell
-                    </Button>
-                </div>
-
-                <Table
-                    rowKey="id"
-                    dataSource={filteredStocks}
-                    columns={columns}
-                    pagination={{
-                        pageSize: 10
-                    }}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search stocks"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
 
-            </Card>
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        setCreateOpen(true)
+                    }}
+                >
+                    Create Cell
+                </Button>
+            </div>
+
+            <Table
+                rowKey="id"
+                dataSource={filteredStocks}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
 
             <CreateCellModal
                 open={createOpen}

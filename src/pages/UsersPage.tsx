@@ -10,7 +10,6 @@ import {
     Table,
     Input,
     Button,
-    Card,
     Typography,
     Popconfirm
 } from "antd"
@@ -35,7 +34,7 @@ export default function UsersPage() {
             id: user.id,
             username: user.username,
             fullname: user.fullname,
-            worksInShop: user.works_in_shop?.name ?? "-",
+            worksInShop: user.worksInShop?.name ?? "-",
             role: user.role
         }))
 
@@ -104,37 +103,37 @@ export default function UsersPage() {
             title: "Actions",
             key: "actions",
             render: (_: unknown, user: User) => (
-               <>
-                <Button
-                    onClick={() => {
-                        setSelectedUser(user)
-                        setFullnameOpen(true)
-                    }}
-                    style={{ marginRight: 8, marginLeft: 32 }}
-                >
-                    Change fullname
-                </Button>
-
-                <Button
-                    onClick={() => {
-                        setSelectedUser(user)
-                        setPasswordOpen(true)
-                    }}
-                    style={{ marginRight: 8 }}
-                >
-                    Change password
-                </Button>
-
-
-                <Popconfirm
-                    title="Delete user?"
-                    onConfirm={() => deleteUser(user.id)}
-                >
-                    <Button danger>
-                        Delete
+                <>
+                    <Button
+                        onClick={() => {
+                            setSelectedUser(user)
+                            setFullnameOpen(true)
+                        }}
+                        style={{ marginRight: 8, marginLeft: 32 }}
+                    >
+                        Change fullname
                     </Button>
-                </Popconfirm>
-              </>            
+
+                    <Button
+                        onClick={() => {
+                            setSelectedUser(user)
+                            setPasswordOpen(true)
+                        }}
+                        style={{ marginRight: 8 }}
+                    >
+                        Change password
+                    </Button>
+
+
+                    <Popconfirm
+                        title="Delete user?"
+                        onConfirm={() => deleteUser(user.id)}
+                    >
+                        <Button danger>
+                            Delete
+                        </Button>
+                    </Popconfirm>
+                </>
             )
         }
     ]
@@ -150,12 +149,12 @@ export default function UsersPage() {
             user.fullname
                 .toLowerCase()
                 .includes(search.toLowerCase())
-        
+
         return foundInUsername || foundInFullname
     })
 
 
-   return (
+    return (
         <div className="p-8">
 
             <Typography.Title
@@ -168,45 +167,41 @@ export default function UsersPage() {
                 Users
             </Typography.Title>
 
-            <Card>
-
-               <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 16
-                    }}
-                >
-                    <Input
-                        placeholder="Search users"
-                        value={search}
-                        style={{ width: 500 }}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setCreateOpen(true)
-                        }}
-                    >
-                        Create User
-                    </Button>
-                </div> 
-                
-                <Table
-                    rowKey="id"
-                    dataSource={filteredUsers}
-                    columns={columns}
-                    pagination={{
-                        pageSize: 10
-                    }}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search users"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
 
-            </Card>
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        setCreateOpen(true)
+                    }}
+                >
+                    Create User
+                </Button>
+            </div>
 
-             <CreateUserModal
+            <Table
+                rowKey="id"
+                dataSource={filteredUsers}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
+
+            <CreateUserModal
                 open={createOpen}
                 onClose={() => setCreateOpen(false)}
                 onSuccess={loadUsers}
@@ -228,6 +223,6 @@ export default function UsersPage() {
 
         </div>
 
-    ) 
+    )
 
 }

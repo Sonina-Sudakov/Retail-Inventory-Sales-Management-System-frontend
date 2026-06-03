@@ -10,7 +10,6 @@ import {
     Table,
     Input,
     Button,
-    Card,
     Typography
 } from "antd"
 import { getRole, getShopId } from "../utils/jwt"
@@ -30,7 +29,7 @@ export default function OrderPage() {
     async function loadOrders() {
         let response
 
-        if (role === "admin") {
+        if (role != "shopkeeper") {
             response = await api.get("/orders/all")
         } else {
             response = await api.get(`/orders/shop/${shopId}`)
@@ -40,12 +39,12 @@ export default function OrderPage() {
 
         const orders: OrderShort[] = data.items.map(order => ({
             id: order.id,
-            shopName: order.to_shop.name,
-            createdBy: order.created_by.fullname,
+            shopName: order.toShop.name,
+            createdBy: order.createdBy.fullname,
             status: order.status,
-            createdAt: new Date(order.created_at).toLocaleString(),
-            acceptedAt: order.accepted_at
-                ? new Date(order.accepted_at).toLocaleString() : "-"
+            createdAt: new Date(order.createdAt).toLocaleString(),
+            acceptedAt: order.acceptedAt
+                ? new Date(order.acceptedAt).toLocaleString() : "-"
         }))
 
         setOrders(orders)
@@ -123,7 +122,6 @@ export default function OrderPage() {
                     value: "PENDING"
                 }
             ],
-            defaultFilteredValue: ["PENDING"],
 
             onFilter: (value: string, record: OrderShort) =>
 
@@ -177,23 +175,22 @@ export default function OrderPage() {
                 Orders
             </Typography.Title>
 
-            <Card>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search orders"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 16
-                    }}
-                >
-                    <Input
-                        placeholder="Search orders"
-                        value={search}
-                        style={{ width: 500 }}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-
+                <div style={{ display: "flex", gap: 8 }}>
                     <Button
                         type="primary"
                         onClick={exportToExcel}
@@ -211,19 +208,18 @@ export default function OrderPage() {
                             Create Order
                         </Button>
                     )}
-
                 </div>
 
-                <Table
-                    rowKey="id"
-                    dataSource={filteredOrders}
-                    columns={columns}
-                    pagination={{
-                        pageSize: 10
-                    }}
-                />
+            </div>
 
-            </Card>
+            <Table
+                rowKey="id"
+                dataSource={filteredOrders}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
 
         </div>
 

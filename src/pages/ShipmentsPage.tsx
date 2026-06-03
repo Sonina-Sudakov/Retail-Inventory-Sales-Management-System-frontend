@@ -10,7 +10,6 @@ import {
     Table,
     Input,
     Button,
-    Card,
     Typography,
     message
 } from "antd"
@@ -42,13 +41,13 @@ export default function ShipmentPage() {
 
         const shipments: ShipmentShort[] = data.items.map(shipment => ({
             id: shipment.id,
-            fromLocation: shipment.from_location,
-            toLocation: shipment.to_shop ? shipment.to_shop.name : "Warehouse",
-            createdBy: shipment.created_by.fullname,
+            fromLocation: shipment.fromLocation,
+            toLocation: shipment.toShop ? shipment.toShop.name : "Warehouse",
+            createdBy: shipment.createdBy.fullname,
             status: shipment.status,
-            createdAt: new Date(shipment.created_at).toLocaleString(),
-            updatedAt: shipment.updated_at
-                ? new Date(shipment.updated_at).toLocaleString() : "-"
+            createdAt: new Date(shipment.createdAt).toLocaleString(),
+            updatedAt: shipment.updatedAt
+                ? new Date(shipment.updatedAt).toLocaleString() : "-"
         }))
 
         setShipments(shipments)
@@ -209,23 +208,23 @@ export default function ShipmentPage() {
                 Shipments
             </Typography.Title>
 
-            <Card>
 
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 16
-                    }}
-                >
-                    <Input
-                        placeholder="Search shipments"
-                        value={search}
-                        style={{ width: 500 }}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search shipments"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
+                <div style={{ display: "flex", gap: 8 }}>
                     <Button
                         type="primary"
                         onClick={exportToExcel}
@@ -243,19 +242,18 @@ export default function ShipmentPage() {
                             Create Shipment
                         </Button>
                     )}
-
                 </div>
 
-                <Table
-                    rowKey="id"
-                    dataSource={filteredShipments}
-                    columns={columns}
-                    pagination={{
-                        pageSize: 10
-                    }}
-                />
+            </div>
 
-            </Card>
+            <Table
+                rowKey="id"
+                dataSource={filteredShipments}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
 
         </div>
 

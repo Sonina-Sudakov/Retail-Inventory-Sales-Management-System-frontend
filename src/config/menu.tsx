@@ -68,17 +68,17 @@ export const menuItems = {
 
     STOREKEEPER: [
         {
-            key: "/warehouse/stocks",
+            key: "/storekeeper/stocks",
             icon: <InboxOutlined />,
             label: "Stocks"
         },
         {
-            key: "/warehouse/orders",
+            key: "/storekeeper/orders",
             icon: <FileTextOutlined />,
             label: "Orders"
         },
         {
-            key: "/warehouse/shipments",
+            key: "/storekeeper/shipments",
             icon: <TruckOutlined />,
             label: "Shipments"
         }

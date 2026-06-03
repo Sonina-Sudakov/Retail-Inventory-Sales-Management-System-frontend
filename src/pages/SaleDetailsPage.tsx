@@ -19,9 +19,15 @@ export default function SaleDetailsPage() {
     const navigate = useNavigate()
 
     const [sale, setSale] = useState<SaleDetailed | null>(null)
-    const [price, setPrice] = useState<number>(0)
 
     const role = getRole()?.toLowerCase()
+
+    const totalPrice = sale
+        ? sale.items.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        )
+        : 0
 
     async function loadSale() {
 
@@ -33,15 +39,9 @@ export default function SaleDetailsPage() {
             id: data.id,
             shop: data.shop,
             user: data.user,
-            created_at: data.created_at,
+            created_at: data.createdAt,
             items: data.items
         })
-
-        {
-            data.items.map((item: any) => {
-                setPrice(price + item.price * item.quantity)
-            })
-        }
     }
 
     useEffect(() => {
@@ -144,7 +144,7 @@ export default function SaleDetailsPage() {
 
                     <Descriptions.Item label="Total">
                         {
-                            price
+                            totalPrice
                         }
                     </Descriptions.Item>
 

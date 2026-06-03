@@ -32,11 +32,11 @@ export default function ShipmentDetailsPage() {
 
         setShipment({
             id: data.id,
-            shop: data.to_shop,
-            createdBy: data.created_by,
+            shop: data.toShop,
+            createdBy: data.createdBy,
             status: data.status,
-            createdAt: data.created_at,
-            updatedAt: data.updated_at,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
             items: data.items
         })
     }
@@ -57,7 +57,7 @@ export default function ShipmentDetailsPage() {
     }
 
     async function handleAccept() {
-        navigate(`/warehouse/shipments/create/${id}`)
+        navigate(`/${role}/shipments/create/${id}`)
     }
 
     if (!shipment) {
@@ -116,10 +116,10 @@ export default function ShipmentDetailsPage() {
                                 title="Shop Information"
                                 content={
                                     <div>
-                                        <div>Contact Face: {shipment.shop.contact_face}</div>
+                                        <div>Contact Face: {shipment.shop.contactFace}</div>
                                         <div>Address: {shipment.shop.address}</div>
                                         <div>Email: {shipment.shop.email}</div>
-                                        <div>Phone: {shipment.shop.phone_number}</div>
+                                        <div>Phone: {shipment.shop.phoneNumber}</div>
                                     </div>
                                 }
                             >

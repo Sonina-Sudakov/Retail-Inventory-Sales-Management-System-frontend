@@ -24,6 +24,8 @@ export default function OrderDetailsPage() {
 
     const role = getRole()?.toLowerCase()
 
+    console.log(role)
+
     async function loadOrder() {
 
         const response = await api.get(`/orders?id=${id}`)
@@ -32,11 +34,11 @@ export default function OrderDetailsPage() {
 
         setOrder({
             id: data.id,
-            shop: data.to_shop,
-            createdBy: data.created_by,
+            shop: data.toShop,
+            createdBy: data.createdBy,
             status: data.status,
-            createdAt: data.created_at,
-            acceptedAt: data.accepted_at,
+            createdAt: data.createdAt,
+            acceptedAt: data.acceptedAt,
             items: data.items
         })
     }
@@ -57,7 +59,7 @@ export default function OrderDetailsPage() {
     }
 
     async function handleAccept() {
-        navigate(`/warehouse/shipments/create/${id}`)
+        navigate(`/${role}/shipments/create/${id}`)
     }
 
     if (!order) {
