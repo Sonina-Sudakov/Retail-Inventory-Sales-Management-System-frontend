@@ -55,15 +55,15 @@ export default function CreateSalePage() {
 
     async function loadProducts() {
 
-        const response = await api.get("/products/all")
+        const response = await api.get(`/shops/${shop_id}/stocks`)
 
-        const products: Product[] = response.data.items.map((product: any) => ({
-            id: product.id,
-            name: product.name,
-            unit: product.unit,
-            type: product.type,
-            price: product.price,
-            origin: product.origin
+        const products: Product[] = response.data.items.map((stock: any) => ({
+            id: stock.product.id,
+            name: stock.product.name,
+            unit: stock.product.unit,
+            type: stock.product.type,
+            price: stock.product.price,
+            origin: stock.product.origin
         }))
 
         setProducts(products)

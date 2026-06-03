@@ -110,7 +110,7 @@ export default function UsersPage() {
                         setSelectedUser(user)
                         setFullnameOpen(true)
                     }}
-                    style={{ marginRight: 8 }}
+                    style={{ marginRight: 8, marginLeft: 32 }}
                 >
                     Change fullname
                 </Button>

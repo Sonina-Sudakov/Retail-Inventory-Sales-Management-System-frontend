@@ -142,6 +142,7 @@ export default function WarehouseStocksPage() {
             render: (_: unknown, stock: WarehouseStock) => (
                 <Space>
                     <Button
+                        style={{marginLeft: 32}}
                         onClick={() => {
                             setSelectedStock(stock)
                             setStoreOpen(true)

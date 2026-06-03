@@ -33,8 +33,6 @@ export default function ShopStocksPage() {
 
             product_id: stock.product.id,
             product: stock.product.name,
-            product_id: stock.product.id,
-            shop_id: shop_id,
             units: stock.product.unit,
             type: stock.product.type,
             price: stock.product.price,
@@ -162,7 +160,7 @@ export default function ShopStocksPage() {
                             setSelectedStock(stock)
                             setSaveOpen(true)
                         }}
-                        style={{ marginRight: 8 }}
+                        style={{ marginRight: 8, marginLeft: 40 }}
                     >
                         Update Min. Quantity
                     </Button>

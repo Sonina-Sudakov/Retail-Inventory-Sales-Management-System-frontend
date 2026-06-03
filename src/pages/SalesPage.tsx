@@ -69,7 +69,10 @@ export default function SalesPage() {
                 title: 'Actions',
                 key: 'actions',
                 render: (_: unknown, sale: SaleShort) => (
-                    <Button type="primary" onClick={() => navigate(`${sale.id}`)}>
+                    <Button 
+                        style={{marginLeft: 8}}
+                        type="primary" 
+                        onClick={() => navigate(`${sale.id}`)}>
                         Details
                     </Button>
                 )

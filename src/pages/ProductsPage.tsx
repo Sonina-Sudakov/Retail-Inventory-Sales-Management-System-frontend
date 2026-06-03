@@ -159,7 +159,7 @@ export default function ProductPage() {
                         setSelectedProduct(product)
                         setSaveOpen(true)
                     }}
-                    style={{ marginRight: 8, marginLeft: 16}}
+                    style={{ marginRight: 8, marginLeft: 32}}
                 >
                     Update Info
                 </Button>

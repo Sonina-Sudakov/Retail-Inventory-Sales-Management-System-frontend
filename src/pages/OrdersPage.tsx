@@ -149,7 +149,7 @@ export default function OrderPage() {
                         onClick={() => {
                             navigate(`${order.id}`)
                         }}
-                        style={{ marginRight: 8 }}
+                        style={{ marginLeft: 32 }}
                     >
                         Details
                     </Button>

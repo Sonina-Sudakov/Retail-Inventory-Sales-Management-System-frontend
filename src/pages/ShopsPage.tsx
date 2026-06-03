@@ -97,7 +97,7 @@ export default function ShopPage() {
                         setSelectedShop(shop)
                         setSaveOpen(true)
                     }}
-                    style={{ marginRight: 8 }}
+                    style={{ marginRight: 8 , marginLeft: 32}}
                 >
                     Update Info
                 </Button>
