@@ -1,4 +1,0 @@
-class UserRole(str, Enum):
-    ADMIN = 'ADMIN'
-    STOREKEEPER = 'STOREKEEPER'
-    SHOPKEEPER = 'SHOPKEEPER'

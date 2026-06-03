@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react"
+import * as XLSX from "xlsx"
+import { saveAs } from "file-saver"
+
 import type { ShopStock } from "../types/shopStock"
 import { getStocks } from "../api/shop"
 import { getShopId } from "../utils/jwt"
@@ -23,19 +26,74 @@ export default function ShopStocksPage() {
 
         setShop(response.data.shop)
 
-        const stocks: ShopStock[] = response.data.items.map((stock: any) => ({
+       const stocks: ShopStock[] = response.data.items.map((stock: any) => ({
+            shop_id: response.data.shop.id,
+
             productRaw: stock.product,
+
+            product_id: stock.product.id,
             product: stock.product.name,
             product_id: stock.product.id,
             shop_id: shop_id,
             units: stock.product.unit,
+            type: stock.product.type,
+            price: stock.product.price,
+
             min_quantity: stock.min_quantity,
-            quantity: stock.quantity,
-        }))
+            quantity: stock.quantity
+        })) 
 
         console.log(stocks)
 
         setStocks(stocks)
+    }
+
+    
+    async function createCertificate(stock: ShopStock) {
+
+        const data = [
+            {
+                Shop: shop.name,
+                Product: stock.product,
+                Type: stock.type,
+                Unit: stock.units,
+                Price: stock.price,
+                Quantity: stock.quantity,
+                MinQuantity: stock.min_quantity,
+                GeneratedAt: new Date().toLocaleString()
+            }
+        ]
+
+        const worksheet =
+            XLSX.utils.json_to_sheet(data)
+
+        const workbook =
+            XLSX.utils.book_new()
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Certificate"
+        )
+
+        const excelBuffer =
+            XLSX.write(workbook, {
+                bookType: "xlsx",
+                type: "array"
+            })
+
+        const blob = new Blob(
+            [excelBuffer],
+            {
+                type:
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+        )
+
+        saveAs(
+            blob,
+            `shop_certificate_${stock.product}.xlsx`
+        )
     }
 
     useEffect(() => {
@@ -108,6 +166,11 @@ export default function ShopStocksPage() {
                     >
                         Update Min. Quantity
                     </Button>
+                <Button
+                    onClick={() => createCertificate(stock)}
+                >
+                    Certificate
+                </Button>
                 </>
             )
         }
