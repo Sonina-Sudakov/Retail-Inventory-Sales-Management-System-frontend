@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import * as XLSX from "xlsx"
+import { saveAs } from "file-saver"
 
 import SaveProductModal from "../components/product/SaveProductModal"
 import { api } from "../api/api"
@@ -40,6 +42,78 @@ export default function ProductPage() {
         await api.delete(`/products?id=${id}`)
 
         await loadProducts()
+    }
+
+
+    async function createNetworkCertificate(product: Product) {
+
+        const shopsResponse =
+            await api.get("/shops/all")
+
+        const rows: any[] = []
+
+        let totalQuantity = 0
+
+        for (const shop of shopsResponse.data.items) {
+
+            const stocksResponse =
+                await api.get(`/shops/${shop.id}/stocks`)
+
+            const stock =
+                stocksResponse.data.items.find(
+                    (s: any) => s.product.id === product.id
+                )
+
+            if (stock) {
+
+                rows.push({
+                    Shop: shop.name,
+                    Address: shop.address,
+                    Quantity: stock.quantity,
+                    MinQuantity: stock.min_quantity
+                })
+
+                totalQuantity += stock.quantity
+            }
+        }
+
+        rows.unshift({
+            Shop: "TOTAL",
+            Address: "",
+            Quantity: totalQuantity,
+            MinQuantity: ""
+        })
+
+        const worksheet =
+            XLSX.utils.json_to_sheet(rows)
+
+        const workbook =
+            XLSX.utils.book_new()
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Network Certificate"
+        )
+
+        const excelBuffer =
+            XLSX.write(workbook, {
+                bookType: "xlsx",
+                type: "array"
+            })
+
+        const blob = new Blob(
+            [excelBuffer],
+            {
+                type:
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+        )
+
+        saveAs(
+            blob,
+            `network_certificate_${product.name}.xlsx`
+        )
     }
 
 
@@ -85,7 +159,7 @@ export default function ProductPage() {
                         setSelectedProduct(product)
                         setSaveOpen(true)
                     }}
-                    style={{ marginRight: 8 }}
+                    style={{ marginRight: 8, marginLeft: 16}}
                 >
                     Update Info
                 </Button>
@@ -94,11 +168,24 @@ export default function ProductPage() {
                     title="Delete product?"
                     onConfirm={() => deleteProduct(product.id)}
                 >
-                    <Button danger>
+                    <Button 
+                        danger
+                        style={{ marginRight: 8}}
+
+                    >
                         Delete
                     </Button>
                 </Popconfirm>
-              </>            
+
+                <Button
+                    onClick={() => createNetworkCertificate(product)}
+                    style={{ marginRight: 8 }}
+                >
+                    Certificate
+                </Button>
+
+              </> 
+
             )
         }
     ]
