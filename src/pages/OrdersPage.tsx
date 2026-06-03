@@ -13,7 +13,7 @@ import {
     Card,
     Typography
 } from "antd"
-import { getRole } from "../utils/jwt"
+import { getRole, getShopId } from "../utils/jwt"
 
 
 export default function OrderPage() {
@@ -25,12 +25,20 @@ export default function OrderPage() {
     const navigate = useNavigate()
 
     const role = getRole()?.toLowerCase()
+    const shopId = getShopId()
 
     async function loadOrders() {
+        let response
 
-        const response = await api.get("/orders/all")
+        if (role === "admin") {
+            response = await api.get("/orders/all")
+        } else {
+            response = await api.get(`/orders/shop/${shopId}`)
+        }
 
-        const orders: OrderShort[] = response.data.items.map(order => ({
+        const data = response.data
+
+        const orders: OrderShort[] = data.items.map(order => ({
             id: order.id,
             shopName: order.to_shop.name,
             createdBy: order.created_by.fullname,
