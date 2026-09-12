@@ -9,7 +9,7 @@ import { theme } from "antd";
 
 const { Content } = Layout
 
-export default function AdminLayout() {
+export default function ShopkeeperLayout() {
 
     const role = getRole();
 
@@ -21,11 +21,8 @@ export default function AdminLayout() {
             : [];
 
     return (
-        <Layout
-            style={{
-                minHeight: "100vh"
-            }}
-        >
+        <Layout style={{ minHeight: "100vh" }}>
+
             <Sidebar items={items} />
 
             <Layout>

@@ -1,222 +1,228 @@
 import { useEffect, useState } from "react"
+
+import CreateUserModal from "../components/user/CreateUserModal"
+import ChangeFullnameModal from "../components/user/ChangeFullnameModal"
+import ChangePasswordModal from "../components/user/ChangePasswordModal"
 import { api } from "../api/api"
 import type { User } from "../types/user"
+
+import {
+    Table,
+    Input,
+    Button,
+    Typography,
+    Popconfirm
+} from "antd"
 
 
 export default function UsersPage() {
 
     const [users, setUsers] = useState<User[]>([])
 
-    const [username, setUsername] = useState("")
-    const [fullname, setFullname] = useState("")
-    const [password, setPassword] = useState("")
-    const [role, setRole] = useState("")
+    const [search, setSearch] = useState("")
+
+    const [createOpen, setCreateOpen] = useState(false)
+    const [fullnameOpen, setFullnameOpen] = useState(false)
+    const [passwordOpen, setPasswordOpen] = useState(false)
+    const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
     async function loadUsers() {
 
-        const response = await api.get("/users/")
+        const response = await api.get("/users/all")
 
-        setUsers(response.data.items)
+        const users: User[] = response.data.items.map((user: any) => ({
+            id: user.id,
+            username: user.username,
+            fullname: user.fullname,
+            worksInShop: user.worksInShop?.name ?? "-",
+            role: user.role
+        }))
+
+        setUsers(users)
     }
 
     useEffect(() => {
         loadUsers()
     }, [])
 
-    async function createUser() {
-
-        await api.post("/users/", {
-            username,
-            fullname,
-            password,
-            role
-        })
-
-        setUsername("")
-        setFullname("")
-        setPassword("")
-
-        await loadUsers()
-    }
-
 
     async function deleteUser(id: number) {
 
-        await api.delete(`/users/${id}`)
+        await api.delete(`/users?id=${id}`)
 
         await loadUsers()
     }
 
 
-    return (
-        <div className="min-h-screen bg-gray-100 p-8">
+    const columns = [
+        {
+            title: "ID",
+            dataIndex: "id",
+            key: "id"
+        },
+        {
+            title: "Username",
+            dataIndex: "username",
+            key: "username"
+        },
+        {
+            title: "Fullname",
+            dataIndex: "fullname",
+            key: "fullname"
+        },
+        {
+            title: "Role",
+            dataIndex: "role",
+            key: "role",
 
-            <div className="max-w-5xl mx-auto">
+            filters: [
+                {
+                    text: "Admin",
+                    value: "ADMIN"
+                },
+                {
+                    text: "Storekeeper",
+                    value: "STOREKEEPER"
+                },
+                {
+                    text: "Shopkeeper",
+                    value: "SHOPKEEPER"
+                }
+            ],
 
-                <h1 className="text-4xl font-bold mb-8">
-                    Users
-                </h1>
+            onFilter: (value, user) =>
+                user.role === value
+        },
+        {
+            title: "Workplace",
+            dataIndex: "worksInShop",
+            key: "worksInShop"
+        },
 
-                {/* CREATE USER CARD */}
-
-                <div className="bg-white rounded-2xl shadow p-6 mb-8">
-
-                    <h2 className="text-2xl font-semibold mb-4">
-                        Create User
-                    </h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-                        <input
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Username"
-                            className="border rounded-xl p-3"
-                        />
-
-                        <input
-                            value={fullname}
-                            onChange={(e) => setFullname(e.target.value)}
-                            placeholder="Fullname"
-                            className="border rounded-xl p-3"
-                        />
-
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            className="border rounded-xl p-3"
-                        />
-
-                        <select
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                        >
-                            <option value="" disabled>
-                                Role
-                            </option>
-
-                            <option value="ADMIN">
-                                Admin
-                            </option>
-
-                            <option value="STOREKEEPER">
-                                Storekeeper
-                            </option>
-
-                            <option value="SHOPKEEPER">
-                                Shopkeeper
-                            </option>
-                        </select>
-                    </div>
-
-                    <button
-                        onClick={createUser}
-                        className="
-                            mt-4
-                            bg-black
-                            text-white
-                            px-6
-                            py-3
-                            rounded-xl
-                            hover:opacity-80
-                        "
+        {
+            title: "Actions",
+            key: "actions",
+            render: (_: unknown, user: User) => (
+                <>
+                    <Button
+                        onClick={() => {
+                            setSelectedUser(user)
+                            setFullnameOpen(true)
+                        }}
+                        style={{ marginRight: 8, marginLeft: 32 }}
                     >
-                        Create User
-                    </button>
+                        Change fullname
+                    </Button>
 
-                </div>
+                    <Button
+                        onClick={() => {
+                            setSelectedUser(user)
+                            setPasswordOpen(true)
+                        }}
+                        style={{ marginRight: 8 }}
+                    >
+                        Change password
+                    </Button>
 
-                {/* USERS TABLE */}
 
-                <div className="bg-white rounded-2xl shadow overflow-hidden">
+                    <Popconfirm
+                        title="Delete user?"
+                        onConfirm={() => deleteUser(user.id)}
+                    >
+                        <Button danger>
+                            Delete
+                        </Button>
+                    </Popconfirm>
+                </>
+            )
+        }
+    ]
 
-                    <table className="w-full">
+    const filteredUsers = users.filter(user => {
 
-                        <thead className="bg-gray-50">
+        const foundInUsername =
+            user.username
+                .toLowerCase()
+                .includes(search.toLowerCase())
 
-                            <tr>
+        const foundInFullname =
+            user.fullname
+                .toLowerCase()
+                .includes(search.toLowerCase())
 
-                                <th className="text-left p-4">
-                                    ID
-                                </th>
+        return foundInUsername || foundInFullname
+    })
 
-                                <th className="text-left p-4">
-                                    Username
-                                </th>
 
-                                <th className="text-left p-4">
-                                    Fullname
-                                </th>
+    return (
+        <div className="p-8">
 
-                                <th className="text-left p-4">
-                                    Role
-                                </th>
+            <Typography.Title
+                level={1}
+                style={{
+                    textAlign: "left",
+                    marginBottom: 16
+                }}
+            >
+                Users
+            </Typography.Title>
 
-                                <th className="text-left p-4">
-                                    Actions
-                                </th>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 16
+                }}
+            >
+                <Input
+                    placeholder="Search users"
+                    value={search}
+                    style={{ width: 500 }}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            {users.map(user => (
-
-                                <tr
-                                    key={user.id}
-                                    className="border-t"
-                                >
-
-                                    <td className="p-4">
-                                        {user.id}
-                                    </td>
-
-                                    <td className="p-4">
-                                        {user.username}
-                                    </td>
-
-                                    <td className="p-4">
-                                        {user.fullname}
-                                    </td>
-
-                                    <td className="p-4">
-                                        {user.role}
-                                    </td>
-
-                                    <td className="p-4">
-
-                                        <button
-                                            onClick={() => deleteUser(user.id)}
-                                            className="
-                                                bg-red-500
-                                                text-white
-                                                px-4
-                                                py-2
-                                                rounded-xl
-                                                hover:opacity-80
-                                            "
-                                        >
-                                            Delete
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            ))}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        setCreateOpen(true)
+                    }}
+                >
+                    Create User
+                </Button>
             </div>
 
+            <Table
+                rowKey="id"
+                dataSource={filteredUsers}
+                columns={columns}
+                pagination={{
+                    pageSize: 10
+                }}
+            />
+
+            <CreateUserModal
+                open={createOpen}
+                onClose={() => setCreateOpen(false)}
+                onSuccess={loadUsers}
+            />
+
+            <ChangeFullnameModal
+                user={selectedUser}
+                open={fullnameOpen}
+                onClose={() => setFullnameOpen(false)}
+                onSuccess={loadUsers}
+            />
+
+            <ChangePasswordModal
+                user={selectedUser}
+                open={passwordOpen}
+                onClose={() => setPasswordOpen(false)}
+                onSuccess={loadUsers}
+            />
+
         </div>
+
     )
+
 }
